@@ -1,0 +1,5 @@
+spring.application.name=apiBicoCerto
+spring.datasource.url=jdbc:postgresql://localhost:5432/BicoCerto
+spring.datasource.username=postgres
+spring.datasource.password=admin
+
