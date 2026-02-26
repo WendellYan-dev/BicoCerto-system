@@ -4,6 +4,8 @@ import com.example.apiBicoCerto.DTOs.AuthDTO;
 import com.example.apiBicoCerto.DTOs.LoginResponseDTO;
 import com.example.apiBicoCerto.configuration.JWT.TokenService;
 import com.example.apiBicoCerto.entities.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("auth")
+@Tag(name = "Login", description = "Endpoint responsável pelo Login")
 public class AuthController {
 
     @Autowired
@@ -25,7 +28,10 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
+    @Operation(
+            summary = "Logar",
+            description = "Executa o login."
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthDTO authDTO){
         var userNamePassword = new UsernamePasswordAuthenticationToken(authDTO.login(),authDTO.password());

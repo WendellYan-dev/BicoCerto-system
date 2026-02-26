@@ -1,6 +1,7 @@
-package com.example.apiBicoCerto.services;
+package com.example.apiBicoCerto.services.authServices;
 
 import com.example.apiBicoCerto.repositories.UserRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +15,7 @@ public class AuthService implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         return userRepository.findByUserName(username);
     }
 }

@@ -3,6 +3,7 @@ package com.example.apiBicoCerto.configuration.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +28,13 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.POST,"/user/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

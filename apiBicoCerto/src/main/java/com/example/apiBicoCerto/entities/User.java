@@ -25,8 +25,9 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
-    private int id;
+    private Integer id;
 
     @Column(name = "user_name",nullable = false, unique = true)
     private String userName;
@@ -61,6 +62,7 @@ public class User implements UserDetails {
     @Column(name = "register_date",nullable = false)
     private LocalDate registerDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false)
     private UserStatus status;
 
@@ -70,6 +72,11 @@ public class User implements UserDetails {
             orphanRemoval = true
     )
     private List<Address> addresses = new ArrayList<>();
+
+    public void addAddress(Address address) {
+        address.setUser(this);
+        this.addresses.add(address);
+    }
 
     @Column(name = "user_type",nullable = false)
     private UserType userType;
