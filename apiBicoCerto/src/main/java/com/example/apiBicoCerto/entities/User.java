@@ -21,8 +21,9 @@ import java.util.List;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String userName;
@@ -57,6 +58,7 @@ public class User {
     @Column(nullable = false)
     private LocalDate registerDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserStatus status;
 
@@ -66,6 +68,11 @@ public class User {
             orphanRemoval = true
     )
     private List<Address> addresses = new ArrayList<>();
+
+    public void addAddress(Address address) {
+        address.setUser(this);
+        this.addresses.add(address);
+    }
 
 
 }
