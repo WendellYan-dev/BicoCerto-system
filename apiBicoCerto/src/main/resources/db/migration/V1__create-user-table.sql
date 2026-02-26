@@ -4,13 +4,13 @@ CREATE TABLE Users (
     email VARCHAR(255) NOT NULL UNIQUE,
     first_name VARCHAR(125) NOT NULL,
     last_name VARCHAR(125) NOT NULL,
-    telephone VARCHAR(11) NOT NULL,
-    date_birth DATE NOT NULL,
+    phone_number VARCHAR(11) NOT NULL,
+    birth_date DATE NOT NULL,
     password VARCHAR(255) NOT NULL,
     cpf VARCHAR(14)  UNIQUE,
     cnpj VARCHAR(18) UNIQUE,
-    photo_profile VARCHAR(255),
-    date_register TIMESTAMP NOT NULL,
+    profile_photo VARCHAR(255),
+    register_date TIMESTAMP NOT NULL,
     status VARCHAR(20)  NOT NULL ,
 
     CONSTRAINT check_only_one_document
