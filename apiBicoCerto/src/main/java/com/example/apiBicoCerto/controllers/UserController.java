@@ -126,7 +126,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PatchMapping("/updateAddress/{idAddress}")
-    public ResponseEntity<?> updateAddress(@PathVariable("idAddress") Integer id, UpdateAddressDTO update){
+    public ResponseEntity<?> updateAddress(@PathVariable("idAddress") Integer id,@RequestBody UpdateAddressDTO update){
 
         try {
             UpdateAddressResponseDTO address = updateAddressService.updateAddress(id,update);
