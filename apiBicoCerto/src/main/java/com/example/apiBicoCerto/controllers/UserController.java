@@ -1,8 +1,12 @@
 package com.example.apiBicoCerto.controllers;
 
+import com.example.apiBicoCerto.DTOs.UpdateAddressDTO;
+import com.example.apiBicoCerto.DTOs.UpdateAddressResponseDTO;
 import com.example.apiBicoCerto.DTOs.UpdateUserDTO;
 import com.example.apiBicoCerto.DTOs.UserDTO;
+import com.example.apiBicoCerto.entities.Address;
 import com.example.apiBicoCerto.entities.User;
+import com.example.apiBicoCerto.services.addressServices.UpdateAddressService;
 import com.example.apiBicoCerto.services.userServices.RegisterUserService;
 import com.example.apiBicoCerto.services.userServices.UpdateUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.swing.text.html.parser.Entity;
 
 @RestController
 @RequestMapping("/user")
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     private UpdateUserService updateUserService;
+
+    @Autowired
+    private UpdateAddressService updateAddressService;
 
     @Operation(
             summary = "Cadastrar novo usuário",
@@ -74,9 +78,10 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Regra de negócio violada"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PatchMapping("/update/{id}")
+
+    @PatchMapping("/updateProfile/{idUser}")
     //utilizei o retorno genérico para se adequar ao retorno do primeiro retorno
-    public ResponseEntity<?> UpdateUser(@PathVariable("id") Integer userId,@RequestBody UpdateUserDTO update){
+    public ResponseEntity<?> updateUser(@PathVariable("idUser") Integer userId,@RequestBody UpdateUserDTO update){
         try {
 
             User user = updateUserService.updateUser(userId,update);
@@ -107,6 +112,45 @@ public class UserController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro interno ao atualizar usuário."+ e.getMessage());
         }
+
+    }
+
+    @Operation(
+            summary = "Atualizar endereço",
+            description = "Realiza o update parcial ou total de dados do endereço no sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida com retorno de dados"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação nos dados enviados"),
+            @ApiResponse(responseCode = "403", description = "Autenticado, mas sem permissão"),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @PatchMapping("/updateAddress/{idAddress}")
+    public ResponseEntity<?> updateAddress(@PathVariable("idAddress") Integer id, UpdateAddressDTO update){
+
+        try {
+            UpdateAddressResponseDTO address = updateAddressService.updateAddress(id,update);
+
+            return ResponseEntity.ok(address);
+
+        } catch (IllegalArgumentException e){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erro de validação"+e.getMessage());
+
+        } catch (SecurityException e){
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Acesso negado"+e.getMessage());
+
+        } catch (Exception e){
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno do servidro ao tentar atualizar o endereço"+e.getMessage());
+
+        }
+
+
 
     }
 }
