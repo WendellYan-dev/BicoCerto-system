@@ -12,6 +12,7 @@ CREATE TABLE Users (
     profile_photo VARCHAR(255),
     register_date TIMESTAMP NOT NULL,
     status VARCHAR(20)  NOT NULL ,
+    user_type VARCHAR(20) NOT NULL,
 
     CONSTRAINT check_only_one_document
         CHECK (

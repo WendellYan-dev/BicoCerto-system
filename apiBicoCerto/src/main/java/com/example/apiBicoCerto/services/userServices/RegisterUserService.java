@@ -11,6 +11,7 @@ import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,6 +22,9 @@ import java.util.List;
 @Service
 @Transactional
 public class RegisterUserService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -89,10 +93,11 @@ public class RegisterUserService {
             }
 
             if(dto.password() != null){
+                String password = passwordEncoder.encode(dto.password());
                 if(!verificationService.isValidPassword(dto.password())){
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha inválida");
                 }
-                user.setPassword(dto.password());
+                user.setPassword(password);
             }else{
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha é obrigatória");
             }
@@ -122,96 +127,32 @@ public class RegisterUserService {
 
             user.setProfilePhoto(dto.profilePhoto());
 
-            user.setRegisterDate(LocalDate.from(LocalDateTime.now()));
-            user.setStatus(dto.status());
+        user.setUserType(dto.userType());
 
-        if (dto.addresses() != null && !dto.addresses().isEmpty()) {
+        user.setRegisterDate(java.time.LocalDate.now());
+        user.setStatus(dto.status());
 
+        if (dto.addresses() != null) {
             List<Address> addresses = dto.addresses().stream().map(addressDTO -> {
 
                 Address address = new Address();
-
-                // CEP
-                if (addressDTO.postalCode() != null) {
-                    if (!verificationService.isValidPostalCode(addressDTO.postalCode())) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "CEP com formato inválido"
-                        );
-                    }
-                    address.setPostalCode(addressDTO.postalCode());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "CEP é obrigatório"
-                    );
-                }
-
-                // Rua
-                if (addressDTO.street() != null) {
-                    address.setStreet(addressDTO.street());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "Rua é obrigatória"
-                    );
-                }
-
-                // Bairro
-                if (addressDTO.neighborhood() != null) {
-                    address.setNeighborhood(addressDTO.neighborhood());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "Bairro é obrigatório"
-                    );
-                }
-
-                // Estado (UF)
-                if (addressDTO.state() != null) {
-                    if (!verificationService.isValidState(addressDTO.state())) {
-                        throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
-                                "UF inválida"
-                        );
-                    }
-                    address.setState(addressDTO.state());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "UF é obrigatória"
-                    );
-                }
-
-                // Número
-                if (addressDTO.number() != null) {
-                    address.setNumber(addressDTO.number());
-                } else {
-                    throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "Número é obrigatório"
-                    );
-                }
-
-                // Complemento (opcional)
+                address.setPostalCode(addressDTO.postalCode());
+                address.setStreet(addressDTO.street());
+                address.setNeighborhood(addressDTO.neighborhood());
+                address.setState(addressDTO.state());
+                address.setNumber(addressDTO.number());
                 address.setComplement(addressDTO.complement());
-
                 address.setPrimary(addressDTO.isPrimary());
 
                 address.setUser(user);
+
 
                 return address;
 
             }).toList();
 
             user.setAddresses(addresses);
-
-        } else {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Pelo menos um endereço deve ser informado"
-            );
         }
-            userRepository.save(user);
+        userRepository.save(user);
     }
 }
