@@ -34,6 +34,7 @@ public class SecurityConfigurations {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/service/register").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

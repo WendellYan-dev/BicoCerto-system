@@ -73,6 +73,9 @@ public class User implements UserDetails {
     )
     private List<Address> addresses = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user")
+    private InformalWorker informalWorker;
+
     public void addAddress(Address address) {
         address.setUser(this);
         this.addresses.add(address);
