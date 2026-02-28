@@ -35,7 +35,7 @@ public class RegisterUserService {
     @Autowired
     private VerificationService verificationService;
 
-    public void registerUser(UserDTO dto) {
+    public User registerUser(UserDTO dto) {
 
             User user = new User();
 
@@ -124,7 +124,6 @@ public class RegisterUserService {
             }
 
 
-
             user.setProfilePhoto(dto.profilePhoto());
 
         user.setUserType(dto.userType());
@@ -146,7 +145,6 @@ public class RegisterUserService {
 
                 address.setUser(user);
 
-
                 return address;
 
             }).toList();
@@ -154,5 +152,6 @@ public class RegisterUserService {
             user.setAddresses(addresses);
         }
         userRepository.save(user);
+        return user;
     }
 }

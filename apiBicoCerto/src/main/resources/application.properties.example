@@ -3,3 +3,4 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/BicoCerto
 spring.datasource.username=postgres
 spring.datasource.password=admin
 
+api.security.token.secret=minhaChaveSuperSecreta123

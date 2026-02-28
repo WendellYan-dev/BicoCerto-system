@@ -34,7 +34,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto contendo os dados do usuário", required = true)
+    public ResponseEntity<?> registerUser(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto contendo os dados do usuário", required = true)
             @RequestBody UserDTO userDTO) {
 
         try {

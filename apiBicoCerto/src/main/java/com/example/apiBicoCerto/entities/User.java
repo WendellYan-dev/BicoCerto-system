@@ -74,11 +74,7 @@ public class User implements UserDetails {
     )
     private List<Address> addresses = new ArrayList<>();
 
-    public void addAddress(Address address) {
-        address.setUser(this);
-        this.addresses.add(address);
-    }
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type",nullable = false)
     private UserType userType;
 
