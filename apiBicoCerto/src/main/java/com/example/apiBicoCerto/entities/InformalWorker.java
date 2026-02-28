@@ -35,5 +35,5 @@ public class InformalWorker {
     private User user;
 
     @OneToMany(mappedBy = "informalWorker", cascade = CascadeType.ALL)
-    private List<Service> services;
+    private List<Work> services;
 }
