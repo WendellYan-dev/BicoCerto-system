@@ -34,7 +34,11 @@ public class SecurityConfigurations {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/register").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/service/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/informalWorker/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/work/register").permitAll()
+                        .requestMatchers(HttpMethod.PATCH,"/work/edit/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/work/search/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/work/delete/{id}").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

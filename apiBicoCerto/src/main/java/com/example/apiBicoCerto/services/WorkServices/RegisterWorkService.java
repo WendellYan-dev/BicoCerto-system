@@ -1,16 +1,23 @@
 package com.example.apiBicoCerto.services.WorkServices;
 
 
-import com.example.apiBicoCerto.DTOs.WorkDTO;
+import com.example.apiBicoCerto.DTOs.RegisterWorkDTO;
 import com.example.apiBicoCerto.entities.InformalWorker;
+import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.entities.Work;
+import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
 import com.example.apiBicoCerto.repositories.WorkRepository;
 import com.example.apiBicoCerto.utils.GenerateLinkService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -25,20 +32,42 @@ public class RegisterWorkService {
     @Autowired
     private InformalWorkerRepository informalWorkerRepository;
 
-    public void registerService(WorkDTO workDTO) throws IOException {
-        String linkUrl = generateLinkService.uploadImage(workDTO.image());
-        Work work = new Work();
-        work.setDescription(workDTO.description());
-        work.setTitle(workDTO.description());
-        work.setPrice(workDTO.price());
-        work.setUrlPhoto(linkUrl);
+
+
+    public void registerService(RegisterWorkDTO registerWorkDTO) throws IOException {
+
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || Objects.requireNonNull(authentication.getPrincipal()).equals("anonymousUser")) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Usuário não autenticado. Faça login para continuar."
+            );
+        }
+
+        User loggedUser = (User) authentication.getPrincipal();
+
+        assert loggedUser != null;
 
         InformalWorker informalWorker = informalWorkerRepository
-                .findById(workDTO.id_informal_worker())
-                .orElseThrow(() ->
-                        new RuntimeException("Não existe nenhum prestador de serviço com esse id")
-                );
+                .findByUserId(loggedUser.getId());
 
+        if (informalWorker == null) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Usuário não é um prestador de serviços");
+        }
+
+        String linkUrl = generateLinkService.uploadImage(registerWorkDTO.image());
+        Work work = new Work();
+        work.setDescription(registerWorkDTO.title());
+        work.setTitle(registerWorkDTO.description());
+        work.setPrice(registerWorkDTO.price());
+        work.setUrlPhoto(linkUrl);
         work.setInformalWorker(informalWorker);
 
         workRepository.save(work);
