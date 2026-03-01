@@ -140,7 +140,7 @@ public class RegisterUserService {
                 address.setState(addressDTO.state());
                 address.setNumber(addressDTO.number());
                 address.setComplement(addressDTO.complement());
-                address.setPrimary(addressDTO.isPrimary());
+                address.setIsPrimary(addressDTO.isPrimary());
 
                 address.setUser(user);
 

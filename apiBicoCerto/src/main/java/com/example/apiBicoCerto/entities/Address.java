@@ -41,7 +41,8 @@ public class Address {
     @Column
     private String complement;
 
+    //tive que mudar para primitivo para permitir comparações do tipo null
     @Column
-    private boolean isPrimary;
+    private Boolean isPrimary;
 
 }

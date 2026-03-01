@@ -2,8 +2,8 @@ package com.example.apiBicoCerto.DTOs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "DTO responsável pelos dados de endereço do usuário")
-public record AddressDTO(
+@Schema(description = "DTO responsável pelo transporte de dados a serem atualizados do endereço")
+public record UpdateAddressDTO(
 
         @Schema(description = "CEP", example = "49000000")
         String postalCode,
@@ -25,4 +25,5 @@ public record AddressDTO(
 
         @Schema(description = "Indica se é o endereço principal", example = "true")
         Boolean isPrimary
+
 ) {}
