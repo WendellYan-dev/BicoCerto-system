@@ -59,7 +59,7 @@ public class UpdateAddressService {
                 address.getNumber(),
                 address.getIsPrimary(),
                 address.getUser().getId(),
-                address.getUser().getUserName()
+                address.getUser().getUsername()
         );
 
     }

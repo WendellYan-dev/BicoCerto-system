@@ -1,6 +1,7 @@
 package com.example.apiBicoCerto.DTOs;
 
 import com.example.apiBicoCerto.enums.UserStatus;
+import com.example.apiBicoCerto.enums.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -46,5 +47,8 @@ public record UserDTO(
         UserStatus status,
 
         @Schema(description = "Lista de endereços associados ao usuário")
-        List<AddressDTO> addresses
+        List<AddressDTO> addresses,
+
+        @Schema(description = "Tipo do Usuário",example = "CLIENTE")
+        UserType userType
 ) {}
