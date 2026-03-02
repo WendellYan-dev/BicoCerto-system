@@ -83,14 +83,13 @@ public class UserController {
     })
 
     @PatchMapping("/updateProfile/{idUser}")
-    //utilizei o retorno genérico para se adequar ao retorno do primeiro retorno
-    public ResponseEntity<?> updateUser(@PathVariable("idUser") Integer userId,@RequestBody UpdateUserDTO update){
+        public ResponseEntity<String> updateUser(@PathVariable("idUser") Integer userId,@RequestBody UpdateUserDTO update){
         try {
 
-            User user = updateUserService.updateUser(userId,update);
+            updateUserService.updateUser(userId,update);
 
             return ResponseEntity
-                    .ok(user);
+                    .ok("Usuário atualizado com sucesso!");
 
         } catch (IllegalArgumentException e){
 

@@ -4,19 +4,30 @@ import com.example.apiBicoCerto.DTOs.UpdateUserDTO;
 import com.example.apiBicoCerto.DTOs.UserDTO;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.repositories.UserRepository;
+import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
 public class UpdateUserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    public User updateUser(Integer userId, UpdateUserDTO update){
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private VerificationService verificationService;
+
+
+    public void updateUser(Integer userId, UpdateUserDTO update){
         //procura o usuário se ele já existe
         User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("Usuário não encontrado"));
 
@@ -29,18 +40,41 @@ public class UpdateUserService {
             user.setLastName(update.lastName());
         }
 
-        if(update.email()!=null && !user.getEmail().equals(update.email())){
-            //aqui posso chamar algum método de verificação do email novo
-            //posso também pôr um método de verificação de email já em uso no sistema
+        if (update.email() != null &&
+                !update.email().equals(user.getEmail())) {
+
+            if (!verificationService.isValidEmail(update.email())) {
+                throw new IllegalArgumentException("Formato de email inválido");
+            }
+
+            if (userRepository.existsByEmail(update.email())) {
+                throw new IllegalStateException("Email já em uso!");
+            }
+
             user.setEmail(update.email());
         }
 
+        //o Spring faz o hash da senha informada usando o mesmo salt armazenado para comparar a senha atual com a que quero alterar
+        if (update.password() != null && !passwordEncoder.matches(update.password(), user.getPassword())) {
+            //aqui posso chamar algum método de retorno de senha já foi usada anteriormente,por exemplo
+            if(!verificationService.isValidPassword(update.password())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha inválida");
+            }
+            String encoded = passwordEncoder.encode(update.password());
+            user.setPassword(encoded);
+        }
+
         if(update.birthDate()!=null) {
+            if(!verificationService.isValidBirthDate(update.birthDate())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data inválida");
+            }
             user.setBirthDate(update.birthDate());
         }
 
         if(update.phoneNumber()!=null) {
-            //aqui posso colocar um método também de verificação do novo telefone cadastrado
+            if(!verificationService.isValidPhone(update.phoneNumber())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de telefone inválido");
+            }
             user.setPhoneNumber(update.phoneNumber());
         }
 
@@ -54,7 +88,6 @@ public class UpdateUserService {
 
         userRepository.save(user);
 
-        return user;
     }
 
 
