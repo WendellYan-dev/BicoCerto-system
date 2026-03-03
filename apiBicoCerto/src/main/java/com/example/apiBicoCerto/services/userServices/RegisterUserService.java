@@ -7,14 +7,17 @@ import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.repositories.UserRepository;
+import com.example.apiBicoCerto.utils.GenerateLinkService;
 import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,14 +38,15 @@ public class RegisterUserService {
     @Autowired
     private VerificationService verificationService;
 
+    @Autowired
+    private GenerateLinkService generateLinkService;
 
-    public User registerUser(UserDTO dto) {
+
+    public User registerUser(UserDTO dto, MultipartFile profilePhoto) throws IOException {
 
             User user = new User();
 
-            if (dto.profilePhoto() != null){
 
-            }
 
             if (dto.userName() != null) {
                 if (userRepository.findByUserName(dto.userName()) != null) {
@@ -128,10 +132,8 @@ public class RegisterUserService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Você deve informar apenas CPF ou apenas CNPJ.");
             }
 
-            user.setProfilePhoto(dto.profilePhoto());
 
         user.setUserType(dto.userType());
-
         user.setRegisterDate(java.time.LocalDate.now());
         user.setStatus(dto.status());
 
@@ -154,6 +156,9 @@ public class RegisterUserService {
             }).toList();
 
             user.setAddresses(addresses);
+        }
+        if (profilePhoto != null){
+            user.setProfilePhoto(generateLinkService.uploadImage(profilePhoto));
         }
         userRepository.save(user);
         return user;

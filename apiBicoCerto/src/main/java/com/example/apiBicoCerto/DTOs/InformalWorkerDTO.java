@@ -5,6 +5,7 @@ import com.example.apiBicoCerto.enums.ServiceCategories;
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.enums.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,8 +41,6 @@ public record InformalWorkerDTO(
         @Schema(description = "CNPJ", example = "null")
         String cnpj,
 
-        @Schema(description = "Foto de perfil", example = "https://meusite.com/foto.jpg")
-        String profilePhoto,
 
         @Schema(description = "Data de cadastro", example = "2026-02-28")
         LocalDate registerDate,
@@ -51,19 +50,19 @@ public record InformalWorkerDTO(
 
         @Schema(
                 description = "Lista de endereços",
-                example = """
-            [
-              {
-                "postalCode": "49000000",
-                "street": "Rua A",
-                "neighborhood": "Centro",
-                "state": "SE",
-                "number": "100",
-                "complement": "Apto 2",
-                "isPrimary": true
-              }
-            ]
-            """
+                        example = """
+                    [
+                {
+                        "postalCode": "49000000",
+                        "street": "Rua A",
+                        "neighborhood": "Centro",
+                        "state": "SE",
+                        "number": "100",
+                        "complement": "Apto 2",
+                        "isPrimary": true
+                      }
+                    ]
+                    """
         )
         List<AddressDTO> addresses,
 

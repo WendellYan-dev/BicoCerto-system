@@ -1,12 +1,14 @@
 package com.example.apiBicoCerto.controllers;
 
 import com.example.apiBicoCerto.DTOs.InformalWorkerDTO;
+import com.example.apiBicoCerto.DTOs.UserDTO;
 import com.example.apiBicoCerto.services.informalWorkerServices.RegisterInformalWorkerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -22,11 +24,12 @@ public class InformalWorkerController {
             description = "Realiza o cadastro de um novo informal worker no sistema, incluindo seus endereços vinculados."
     )
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody InformalWorkerDTO dto) {
+    public ResponseEntity<?> register(@RequestPart("User") InformalWorkerDTO informalWorkerDTO,
+                                      @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
 
         try {
 
-            registerInformalWorkerService.registerInformalWorker(dto);
+            registerInformalWorkerService.registerInformalWorker(informalWorkerDTO,profilePhoto);
 
             return ResponseEntity.ok("Prestador cadastrado com sucesso");
 
