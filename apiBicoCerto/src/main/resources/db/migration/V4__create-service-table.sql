@@ -3,7 +3,7 @@ CREATE TABLE Service (
     title VARCHAR(45) NOT NULL,
     description VARCHAR(255) NOT NULL,
     price NUMERIC(10,2) NOT NULL ,
-    url_photo VARCHAR(255) NOT NULL,
+    url_photo VARCHAR(255) ,
 
     id_informal_worker INTEGER NOT NULL,
 

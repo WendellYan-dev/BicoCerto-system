@@ -17,10 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,12 +46,13 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Usuário já cadastrado (email ou CPF/CNPJ duplicado)"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register",consumes = "multipart/form-data")
     public ResponseEntity<?> registerUser(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Objeto contendo os dados do usuário", required = true)
-            @RequestBody UserDTO userDTO) {
+            @RequestPart("User") UserDTO userDTO,
+            @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
 
         try {
-            registerUserService.registerUser(userDTO);
+            registerUserService.registerUser(userDTO,profilePhoto);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Usuário cadastrado com sucesso.");
@@ -82,11 +81,11 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
 
-    @PatchMapping("/updateProfile/{idUser}")
-        public ResponseEntity<String> updateUser(@PathVariable("idUser") Integer userId,@RequestBody UpdateUserDTO update){
+    @PatchMapping("/updateProfile")
+        public ResponseEntity<String> updateUser(@RequestBody UpdateUserDTO update){
         try {
 
-            updateUserService.updateUser(userId,update);
+            updateUserService.updateUser(update);
 
             return ResponseEntity
                     .ok("Usuário atualizado com sucesso!");

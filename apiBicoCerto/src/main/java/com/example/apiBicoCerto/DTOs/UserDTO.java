@@ -3,6 +3,7 @@ package com.example.apiBicoCerto.DTOs;
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.enums.UserType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,9 +37,6 @@ public record UserDTO(
 
         @Schema(description = "CNPJ do usuário (caso pessoa jurídica)", example = "12345678000199")
         String cnpj,
-
-        @Schema(description = "URL da foto de perfil")
-        String profilePhoto,
 
         @Schema(description = "Data de registro no sistema", example = "2026-02-26")
         LocalDate registerDate,

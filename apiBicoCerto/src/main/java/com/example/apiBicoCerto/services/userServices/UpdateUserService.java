@@ -1,17 +1,20 @@
 package com.example.apiBicoCerto.services.userServices;
 
 import com.example.apiBicoCerto.DTOs.UpdateUserDTO;
-import com.example.apiBicoCerto.DTOs.UserDTO;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.repositories.UserRepository;
 import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -27,9 +30,28 @@ public class UpdateUserService {
     private VerificationService verificationService;
 
 
-    public void updateUser(Integer userId, UpdateUserDTO update){
+    public void updateUser( UpdateUserDTO update){
         //procura o usuário se ele já existe
-        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("Usuário não encontrado"));
+
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || Objects.equals(authentication.getPrincipal(), "anonymousUser")) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Usuário não autenticado. Faça login para continuar."
+            );
+        }
+
+        User loggedUser = (User) authentication.getPrincipal();
+
+
+        assert loggedUser != null;
+        User user = userRepository.findById(loggedUser.getId()).orElseThrow(()-> new NotFoundException("Usuário não encontrado"));
 
         //verificações if para evitar sobrescrever no banco com valor nulo
         if(update.firstName()!=null){

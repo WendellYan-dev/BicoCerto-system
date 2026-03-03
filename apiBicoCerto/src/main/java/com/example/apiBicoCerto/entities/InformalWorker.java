@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Table(name = "informalworker")
 @Entity
@@ -38,5 +40,12 @@ public class InformalWorker{
     @OneToOne(optional = false)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
+
+    @OneToMany(
+            mappedBy = "informalWorker",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Work> works = new ArrayList<>();
 
 }

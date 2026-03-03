@@ -9,13 +9,16 @@ import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
 import com.example.apiBicoCerto.repositories.UserRepository;
 import com.example.apiBicoCerto.services.userServices.RegisterUserService;
+import com.example.apiBicoCerto.utils.GenerateLinkService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -37,10 +40,15 @@ public class RegisterInformalWorkerService {
     @Autowired
     private AddressRepository addressRepository;
 
-    public void registerInformalWorker(InformalWorkerDTO informalWorkerDTO){
+    @Autowired
+    private GenerateLinkService generateLinkService;
+
+
+    public void registerInformalWorker(InformalWorkerDTO informalWorkerDTO, MultipartFile profilePhoto) throws IOException {
 
         InformalWorker informalWorker = new InformalWorker();
         User user;
+
 
         if(userRepository.findByCpf(informalWorkerDTO.cpf()) == null){
             user = registerUserService.registerUser(new UserDTO(
@@ -53,12 +61,11 @@ public class RegisterInformalWorkerService {
                     informalWorkerDTO.password(),
                     informalWorkerDTO.cpf(),
                     informalWorkerDTO.cnpj(),
-                    informalWorkerDTO.profilePhoto(),
                     informalWorkerDTO.registerDate(),
                     informalWorkerDTO.status(),
                     informalWorkerDTO.addresses(),
                     informalWorkerDTO.userType()
-            ));
+            ),profilePhoto);
         }else{
             user = userRepository.findByCpf(informalWorkerDTO.cpf());
         }
@@ -78,6 +85,7 @@ public class RegisterInformalWorkerService {
 
         // Como há @OneToOne com User
         informalWorker.setUser(user);
+        user.setInformalWorker(informalWorker);
 
         informalWorkerRepository.save(informalWorker);
 
