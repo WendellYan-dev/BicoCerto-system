@@ -1,0 +1,57 @@
+package com.example.apiBicoCerto.controllers;
+
+import com.example.apiBicoCerto.DTOs.AvailabilityDTO;
+import com.example.apiBicoCerto.services.availabilityServices.RegisterAvailabilityService;
+import io.swagger.v3.oas.annotations.Operation;
+
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/availability")
+@Tag(name = "Availability", description = "Endpoints responsáveis pelo gerenciamento de disponibilidade dos prestadores")
+public class AvailabilityController {
+
+    @Autowired
+    private RegisterAvailabilityService registerAvailabilityService;
+
+
+    // ============================= CREATE =============================
+
+    @PostMapping("/register")
+    @Operation(
+            summary = "Cadastrar disponibilidades",
+            description = "Endpoint responsável por cadastrar uma lista de horários de disponibilidade para o prestador logado",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Disponibilidades cadastradas com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Conflito de horários ou dados inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "404", description = "Prestador não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
+    public ResponseEntity<?> registerAvailability(@RequestBody List<AvailabilityDTO> availabilityDTOList) {
+
+        try {
+            registerAvailabilityService.registerAvailability(availabilityDTOList);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+
+        } catch (ResponseStatusException ex) {
+            return ResponseEntity
+                    .status(ex.getStatusCode())
+                    .body(ex.getReason());
+
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado ao cadastrar disponibilidade.");
+        }
+    }
+}

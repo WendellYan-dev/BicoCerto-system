@@ -43,6 +43,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE,"/work/delete/{id}").permitAll()
                         .requestMatchers(HttpMethod.PATCH,"/informalWorker/updateProfile").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/availability/register").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

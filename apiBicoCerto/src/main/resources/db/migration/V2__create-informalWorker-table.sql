@@ -4,6 +4,7 @@ CREATE TABLE InformalWorker (
     about_me VARCHAR(255) NOT NULL,
     local_service VARCHAR(45) NOT NULL,
     id_user INT NOT NULL,
+    works_on_holiday BOOLEAN DEFAULT FALSE,
 
     CONSTRAINT fk_user_informal
         FOREIGN KEY (id_user)

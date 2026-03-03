@@ -37,6 +37,9 @@ public class InformalWorker{
     @Column(name = "local_service")
     private String localService;
 
+    @Column(name = "works_on_holiday")
+    private Boolean worksOnHoliday;
+
     @OneToOne(optional = false)
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
@@ -47,5 +50,12 @@ public class InformalWorker{
             orphanRemoval = true
     )
     private List<Work> works = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "informalWorker",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Availability> availabilities = new ArrayList<>();
 
 }
