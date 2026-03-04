@@ -1,6 +1,9 @@
 package com.example.apiBicoCerto.controllers;
 
 import com.example.apiBicoCerto.DTOs.AvailabilityDTO;
+import com.example.apiBicoCerto.DTOs.DeleteAvailabilityDTO;
+import com.example.apiBicoCerto.exceptions.NotFoundException;
+import com.example.apiBicoCerto.services.availabilityServices.DeleteAvailabilityService;
 import com.example.apiBicoCerto.services.availabilityServices.RegisterAvailabilityService;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -21,6 +24,9 @@ public class AvailabilityController {
 
     @Autowired
     private RegisterAvailabilityService registerAvailabilityService;
+
+    @Autowired
+    private DeleteAvailabilityService deleteAvailabilityService;
 
 
     // ============================= CREATE =============================
@@ -54,4 +60,47 @@ public class AvailabilityController {
                     .body("Erro inesperado ao cadastrar disponibilidade.");
         }
     }
+
+
+    @DeleteMapping("/delete")
+    @Operation(
+            summary = "Deletar disponibilidades",
+            description = "Endpoint responsável por deletar uma lista de horários de disponibilidade para o prestador logado",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Disponibilidades deletadas com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Conflito de horários ou dados inválidos"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "404", description = "Prestador não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
+    public ResponseEntity<String> delAvailability(@RequestBody List<DeleteAvailabilityDTO> idAvailability){
+
+        try {
+
+            deleteAvailabilityService.deleteAvailability(idAvailability);
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+        } catch (ResponseStatusException e) {
+
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getReason());
+
+        } catch (NotFoundException e){
+
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+
+        } catch (Exception ex) {
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado ao deletar disponibilidade.");
+
+        }
+
+    }
+
 }

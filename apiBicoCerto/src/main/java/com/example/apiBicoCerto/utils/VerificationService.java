@@ -20,6 +20,10 @@ public class VerificationService {
     public boolean isValidCpf(String cpf) {
         if (cpf == null) return false;
 
+        if(cpf.length()>11 || cpf.length()<11){
+            return false;
+        }
+
         // 2. Remove a formatação para realizar o cálculo dos dígitos verificadores
         String cleanedCpf = cpf.replaceAll("[^0-9]", "");
 
