@@ -5,6 +5,7 @@ import com.example.apiBicoCerto.DTOs.UserDTO;
 import com.example.apiBicoCerto.entities.Address;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.enums.UserStatus;
+import com.example.apiBicoCerto.enums.UserType;
 import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.repositories.UserRepository;
 import com.example.apiBicoCerto.utils.CnpjService;
@@ -134,9 +135,9 @@ public class RegisterUserService {
             }
 
 
-        user.setUserType(dto.userType());
+        user.setUserType(UserType.CLIENTE);
         user.setRegisterDate(LocalDateTime.now().withNano(0));
-        user.setStatus(dto.status());
+        user.setStatus(UserStatus.ATIVO);
 
         if (dto.addresses() != null) {
             List<Address> addresses = dto.addresses().stream().map(addressDTO -> {

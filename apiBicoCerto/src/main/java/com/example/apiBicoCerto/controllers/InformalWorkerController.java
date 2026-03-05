@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,6 +54,12 @@ public class InformalWorkerController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ex.getMessage());
+        } catch (HttpMessageNotReadableException ex) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Valor inválido enviado para o campo Categoria Serviço");
+
         }catch (Exception ex) {
 
             return ResponseEntity

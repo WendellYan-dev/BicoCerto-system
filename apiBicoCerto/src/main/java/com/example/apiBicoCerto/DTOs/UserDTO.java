@@ -38,12 +38,8 @@ public record UserDTO(
         @Schema(description = "CNPJ do usuário (caso pessoa jurídica)", example = "12345678000199")
         String cnpj,
 
-        @Schema(description = "Status atual do usuário", example = "ATIVO")
-        UserStatus status,
 
         @Schema(description = "Lista de endereços associados ao usuário")
-        List<AddressDTO> addresses,
+        List<AddressDTO> addresses
 
-        @Schema(description = "Tipo do Usuário",example = "CLIENTE")
-        UserType userType
 ) {}
