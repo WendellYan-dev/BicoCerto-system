@@ -38,9 +38,6 @@ public record UserDTO(
         @Schema(description = "CNPJ do usuário (caso pessoa jurídica)", example = "12345678000199")
         String cnpj,
 
-        @Schema(description = "Data de registro no sistema", example = "2026-02-26")
-        LocalDate registerDate,
-
         @Schema(description = "Status atual do usuário", example = "ATIVO")
         UserStatus status,
 

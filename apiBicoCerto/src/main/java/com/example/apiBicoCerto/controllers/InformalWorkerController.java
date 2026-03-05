@@ -49,7 +49,11 @@ public class InformalWorkerController {
                     .status(ex.getStatusCode())
                     .body(ex.getReason());
 
-        } catch (Exception ex) {
+        } catch (IllegalStateException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
+        }catch (Exception ex) {
 
             return ResponseEntity
                     .internalServerError()

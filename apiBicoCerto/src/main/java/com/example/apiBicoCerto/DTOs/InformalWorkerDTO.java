@@ -41,10 +41,6 @@ public record InformalWorkerDTO(
         @Schema(description = "CNPJ", example = "null")
         String cnpj,
 
-
-        @Schema(description = "Data de cadastro", example = "2026-02-28")
-        LocalDate registerDate,
-
         @Schema(description = "Status do usuário", example = "ATIVO")
         UserStatus status,
 

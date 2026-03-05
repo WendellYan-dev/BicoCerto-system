@@ -1,6 +1,8 @@
 package com.example.apiBicoCerto.utils;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -8,6 +10,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Hashtable;
 
 @Service
@@ -139,7 +142,7 @@ public class VerificationService {
         if (phone == null) return false;
 
         String cleaned = phone.replaceAll("[^0-9]", "");
-        return cleaned.length() == 10 || cleaned.length() == 11;
+        return cleaned.length() == 11;
     }
 
     /* =========================
@@ -147,7 +150,20 @@ public class VerificationService {
        ========================= */
 
     public boolean isValidBirthDate(LocalDate date) {
-        return date != null && date.isBefore(LocalDate.now()) && date.isAfter(LocalDate.of(1900, 1, 1));
+
+
+        if (!date.isBefore(LocalDate.now()) || !date.isAfter(LocalDate.of(1900, 1, 1))) {
+            return false;
+        }
+
+        if (Period.between(date, LocalDate.now()).getYears() < 18) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "É necessário ter pelo menos 18 anos."
+            );
+        }
+
+        return true;
     }
 
     /* =========================
@@ -182,6 +198,14 @@ public class VerificationService {
         if (password == null || password.length() < 8) {
             return false;
         }
+
+        if (password.contains(" ")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A senha não pode conter espaços em branco."
+            );
+        }
+
         return true;
     }
 }

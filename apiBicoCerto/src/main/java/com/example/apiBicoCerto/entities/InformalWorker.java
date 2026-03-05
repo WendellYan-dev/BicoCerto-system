@@ -41,7 +41,7 @@ public class InformalWorker{
     private Boolean worksOnHoliday;
 
     @OneToOne(optional = false)
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(name = "id_user", nullable = false, unique = true)
     private User user;
 
     @OneToMany(

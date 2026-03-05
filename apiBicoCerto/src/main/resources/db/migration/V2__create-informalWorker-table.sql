@@ -1,5 +1,5 @@
 CREATE TABLE InformalWorker (
-    id_informal_worker SERIAL PRIMARY KEY NOT NULL ,
+    id_informal_worker SERIAL PRIMARY KEY NOT NULL,
     service_category VARCHAR(45) NOT NULL,
     about_me VARCHAR(255) NOT NULL,
     local_service VARCHAR(45) NOT NULL,
@@ -8,6 +8,8 @@ CREATE TABLE InformalWorker (
 
     CONSTRAINT fk_user_informal
         FOREIGN KEY (id_user)
-            REFERENCES Users(id_user)
-            ON DELETE CASCADE
+        REFERENCES Users(id_user)
+        ON DELETE CASCADE,
+
+    CONSTRAINT unique_user UNIQUE (id_user)
 );

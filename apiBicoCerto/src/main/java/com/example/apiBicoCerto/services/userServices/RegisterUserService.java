@@ -7,6 +7,8 @@ import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.repositories.UserRepository;
+import com.example.apiBicoCerto.utils.CnpjService;
+import com.example.apiBicoCerto.utils.CpfService;
 import com.example.apiBicoCerto.utils.GenerateLinkService;
 import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
@@ -112,41 +114,72 @@ public class RegisterUserService {
             }
 
             if(dto.cpf() != null && dto.cnpj() == null){
-
-                if(!verificationService.isValidCpf(dto.cpf())){
+                String cpf = CpfService.normalize(dto.cpf());
+                if(!verificationService.isValidCpf(cpf)){
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF com formato inválido");
                 }
-                if(userRepository.findByCpf(dto.cpf()) != null){
+                if(userRepository.findByCpf(cpf) != null){
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado!");
                 }
-                user.setCpf(dto.cpf());
+                user.setCpf(cpf);
             }else if(dto.cpf() == null && dto.cnpj() != null){
-                if(!verificationService.isValidCnpj(dto.cnpj())){
+                String cnpj = CnpjService.normalize(dto.cnpj());
+                if(!verificationService.isValidCnpj(cnpj)){
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CNPJ  com formato inválido");
                 }
-                if(userRepository.findByCnpj(dto.cnpj()) != null){
+                if(userRepository.findByCnpj(cnpj) != null){
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "CNPJ já cadastrado!");
                 }
-                user.setCnpj(dto.cnpj());
+                user.setCnpj(cnpj);
             }else{
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Você deve informar apenas CPF ou apenas CNPJ.");
             }
 
 
         user.setUserType(dto.userType());
-        user.setRegisterDate(java.time.LocalDate.now());
+        user.setRegisterDate(LocalDateTime.now().withNano(0));
         user.setStatus(dto.status());
 
         if (dto.addresses() != null) {
             List<Address> addresses = dto.addresses().stream().map(addressDTO -> {
 
                 Address address = new Address();
-                address.setPostalCode(addressDTO.postalCode());
-                address.setStreet(addressDTO.street());
-                address.setNeighborhood(addressDTO.neighborhood());
-                address.setState(addressDTO.state());
-                address.setNumber(addressDTO.number());
+
+                if (addressDTO.postalCode() != null) {
+                    if(!verificationService.isValidPostalCode(addressDTO.postalCode())){
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CEP  com formato inválido");
+                    }
+                    address.setPostalCode(addressDTO.postalCode());
+                }else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CEP é obrigatório");
+                }
+
+                if (addressDTO.street() != null) {
+                    address.setStreet(addressDTO.street());
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rua é obrigatória");
+                }
+
+                if (addressDTO.neighborhood() != null) {
+                    address.setNeighborhood(addressDTO.neighborhood());
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bairro é obrigatório");
+                }
+
+                if (addressDTO.state() != null) {
+                    address.setState(addressDTO.state());
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado é obrigatório");
+                }
+
+                if (addressDTO.number() != null) {
+                    address.setNumber(addressDTO.number());
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número é obrigatório");
+                }
+
                 address.setComplement(addressDTO.complement());
+
                 address.setIsPrimary(addressDTO.isPrimary());
 
                 address.setUser(user);
