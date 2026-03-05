@@ -84,17 +84,26 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Regra de negócio violada"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
+    @PatchMapping(value = "/updateProfile", consumes = "multipart/form-data")
+    public ResponseEntity<String> updateUser(
 
-    @PatchMapping("/updateProfile")
-        public ResponseEntity<String> updateUser(@RequestBody UpdateUserDTO update){
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Objeto contendo os dados de atualização do usuário",
+                    required = true
+            )
+            @RequestPart("userUpdate") UpdateUserDTO update,
+
+            @RequestPart(value = "profilePhoto", required = false)
+            MultipartFile profilePhoto) {
+
         try {
 
-            updateUserService.updateUser(update);
+            updateUserService.updateUser(update,profilePhoto);
 
             return ResponseEntity
                     .ok("Usuário atualizado com sucesso!");
 
-        } catch (IllegalArgumentException e){
+        } catch (ResponseStatusException e){
 
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -110,7 +119,7 @@ public class UserController {
 
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("Email já em uso por outro usuário" + e.getMessage());
+                    .body(e.getMessage());
 
         }  catch (Exception e) {
             return ResponseEntity
