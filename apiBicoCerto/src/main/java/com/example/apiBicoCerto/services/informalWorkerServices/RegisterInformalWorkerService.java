@@ -5,6 +5,7 @@ import com.example.apiBicoCerto.DTOs.InformalWorkerDTO;
 import com.example.apiBicoCerto.DTOs.UserDTO;
 import com.example.apiBicoCerto.entities.InformalWorker;
 import com.example.apiBicoCerto.entities.User;
+import com.example.apiBicoCerto.enums.UserType;
 import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
 import com.example.apiBicoCerto.repositories.UserRepository;
@@ -50,9 +51,26 @@ public class RegisterInformalWorkerService {
 
         InformalWorker informalWorker = new InformalWorker();
         User user = new User();
+        String normalizedCpf = null;
+        String normalizedCnpj = null;
 
+        if (informalWorkerDTO.cpf() != null) {
+            normalizedCpf = CpfService.normalize(informalWorkerDTO.cpf());
+        }
 
-        if((userRepository.findByCpf(CpfService.normalize(informalWorkerDTO.cpf())) == null && informalWorkerDTO.cpf() != null) || (userRepository.findByCnpj(CnpjService.normalize(informalWorkerDTO.cnpj())) == null && informalWorkerDTO.cnpj() != null)){
+        if (informalWorkerDTO.cnpj() != null) {
+            normalizedCnpj = CnpjService.normalize(informalWorkerDTO.cnpj());
+        }
+
+        User existingUser = null;
+
+        if (normalizedCpf != null) {
+            existingUser = userRepository.findByCpf(normalizedCpf);
+        } else if (normalizedCnpj != null) {
+            existingUser = userRepository.findByCnpj(normalizedCnpj);
+        }
+
+        if (existingUser == null) {
             user = registerUserService.registerUser(new UserDTO(
                     informalWorkerDTO.userName(),
                     informalWorkerDTO.email(),
@@ -63,9 +81,8 @@ public class RegisterInformalWorkerService {
                     informalWorkerDTO.password(),
                     informalWorkerDTO.cpf(),
                     informalWorkerDTO.cnpj(),
-                    informalWorkerDTO.status(),
-                    informalWorkerDTO.addresses(),
-                    informalWorkerDTO.userType()
+                    informalWorkerDTO.addresses()
+
             ),profilePhoto);
         }else{
             if(informalWorkerDTO.cpf() != null){
@@ -115,7 +132,7 @@ public class RegisterInformalWorkerService {
         if (informalWorkerDTO.serviceCategory() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Categoria de serviço é obrigatória."
+                    "Categoria de serviço inválida."
             );
         }
         informalWorker.setServiceCategory(informalWorkerDTO.serviceCategory());
@@ -141,7 +158,7 @@ public class RegisterInformalWorkerService {
             throw new IllegalStateException("Usuário já é um prestador de serviço.");
         }
         user.setInformalWorker(informalWorker);
-        user.setUserType(informalWorkerDTO.userType());
+        user.setUserType(UserType.PRESTADOR);
         informalWorker.setUser(user);
 
 

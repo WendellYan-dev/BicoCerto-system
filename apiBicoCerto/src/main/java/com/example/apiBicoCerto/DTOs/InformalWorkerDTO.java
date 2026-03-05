@@ -41,8 +41,6 @@ public record InformalWorkerDTO(
         @Schema(description = "CNPJ", example = "null")
         String cnpj,
 
-        @Schema(description = "Status do usuário", example = "ATIVO")
-        UserStatus status,
 
         @Schema(
                 description = "Lista de endereços",
@@ -62,8 +60,6 @@ public record InformalWorkerDTO(
         )
         List<AddressDTO> addresses,
 
-        @Schema(description = "Tipo do usuário", example = "PRESTADOR")
-        UserType userType,
 
         // ---- Campos específicos do InformalWorker ----
 
