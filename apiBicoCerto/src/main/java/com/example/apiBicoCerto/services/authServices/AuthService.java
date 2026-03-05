@@ -1,5 +1,6 @@
 package com.example.apiBicoCerto.services.authServices;
 
+import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.repositories.UserRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,15 @@ public class AuthService implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        return userRepository.findByUserName(username);
+    public UserDetails loadUserByUsername(@NonNull String username){
+        User user = (User) userRepository
+                .findByUserNameOrEmail(username, username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Login ou senha inválidos");
+        }
+
+
+        return user;
     }
 }

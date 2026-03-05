@@ -18,7 +18,12 @@ public record RegisterWorkDTO(
         @Schema(description = "Preço do serviço", example = "150.00")
         BigDecimal price,
 
-        @Schema(description = "Imagem ilustrativa do trabalho (upload de arquivo)")
+        @Schema(
+                description = "Imagem ilustrativa do trabalho (upload de arquivo)",
+                type = "string",
+                format = "binary",
+                nullable = true // Indica que pode ser nulo
+        )
         MultipartFile image
 
 ) {}

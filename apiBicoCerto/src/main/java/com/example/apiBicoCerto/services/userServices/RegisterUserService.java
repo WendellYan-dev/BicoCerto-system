@@ -46,8 +46,6 @@ public class RegisterUserService {
 
             User user = new User();
 
-
-
             if (dto.userName() != null) {
                 if (userRepository.findByUserName(dto.userName()) != null) {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "Username já em uso!");
