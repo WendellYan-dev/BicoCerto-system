@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Table(name = "service")
 @Entity
@@ -36,6 +37,7 @@ public class Work {
     @JoinColumn(name = "id_informal_worker",nullable = false)
     private InformalWorker informalWorker;
 
-
+    @OneToMany(mappedBy = "service")
+    private List<Booking> bookings;
 
 }

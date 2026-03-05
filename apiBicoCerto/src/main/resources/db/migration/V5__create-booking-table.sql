@@ -2,6 +2,7 @@ CREATE TABLE Booking (
     id_booking SERIAL PRIMARY KEY,
     id_user INTEGER NOT NULL,
     id_service INTEGER NOT NULL,
+    id_informal_worker INTEGER NOT NULL,
     booking_date TIMESTAMP NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
@@ -17,4 +18,11 @@ CREATE TABLE Booking (
         FOREIGN KEY (id_service)
             REFERENCES Service(id_service)
             ON DELETE CASCADE
+
+    CONSTRAINT fk_booking_worker
+        FOREIGN KEY (id_informal_worker)
+            REFERENCES InformalWorker(id_informal_worker)
+            ON DELETE CASCADE
+
+
 );
