@@ -8,15 +8,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
 
 @RestController
 @RequestMapping("auth")
@@ -34,13 +37,38 @@ public class AuthController {
     )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthDTO authDTO){
-        var userNamePassword = new UsernamePasswordAuthenticationToken(authDTO.login(),authDTO.password());
-        var auth = this.authenticationManager.authenticate(userNamePassword);
+        try {
 
-        var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
+            var userNamePassword =
+                    new UsernamePasswordAuthenticationToken(
+                            authDTO.login(),
+                            authDTO.password());
 
-        String userType = ((User) auth.getPrincipal()).getUserType().toString();
+            var auth = this.authenticationManager.authenticate(userNamePassword);
 
-        return ResponseEntity.ok(new LoginResponseDTO(token,userType));
+            var user = (User) auth.getPrincipal();
+
+            assert user != null;
+            var token = tokenService.generateToken(user);
+
+            String userType = user.getUserType().toString();
+
+            return ResponseEntity.ok(new LoginResponseDTO(token, userType));
+
+        } catch (DisabledException e) {
+            // Agora o Spring deve cair aqui se o isEnabled() do User retornar false
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário está inativado.");
+
+        } catch (BadCredentialsException e) {
+            // Específico para senha incorreta ou usuário não encontrado (por segurança)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou senha inválidos");
+
+        } catch (AuthenticationException e) {
+            // Se cair aqui, vamos verificar a causa real para não dar 401 genérico sempre
+            if (e.getCause() instanceof DisabledException || e.getMessage().contains("inativado")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Usuário está inativado.");
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erro na autenticação: " + e.getMessage());
+        }
     }
 }
