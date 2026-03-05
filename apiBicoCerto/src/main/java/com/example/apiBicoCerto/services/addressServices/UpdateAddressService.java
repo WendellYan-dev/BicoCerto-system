@@ -20,29 +20,37 @@ public class UpdateAddressService {
 
         Address address = addressRepository.findById(idAddress).orElseThrow(()-> new NotFoundException("Endereço não encontrado"));
 
-        if(update.postalCode()!=null){
-            address.setPostalCode(update.postalCode());
+        if (update.postalCode() == null) {
+            throw new IllegalArgumentException("CEP é obrigatório");
         }
 
-        if(update.street()!=null){
-            address.setStreet(update.street());
+        if (update.street() == null) {
+            throw new IllegalArgumentException("Logradouro é obrigatório");
         }
 
-        if(update.neighborhood()!=null){
-            address.setNeighborhood(update.neighborhood());
+        if (update.neighborhood() == null) {
+            throw new IllegalArgumentException("Bairro é obrigatório");
         }
 
-        if(update.state()!=null){
-            address.setState(update.state());
+        if (update.state() == null) {
+            throw new IllegalArgumentException("UF é obrigatório");
         }
 
-        if(update.complement()!=null){
-            address.setComplement(update.complement());
+        if (update.number() == null) {
+            throw new IllegalArgumentException("Número é obrigatório");
         }
 
-        if(update.isPrimary()!=null){
-            address.setIsPrimary(update.isPrimary());
+        if (update.isPrimary() == null) {
+            throw new IllegalArgumentException("Se é principal ou não é obrigatório");
         }
+
+        address.setPostalCode(update.postalCode());
+        address.setStreet(update.street());
+        address.setNeighborhood(update.neighborhood());
+        address.setState(update.state());
+        address.setNumber(update.number());
+        address.setComplement(update.complement());
+        address.setIsPrimary(update.isPrimary());
 
         addressRepository.save(address);
 

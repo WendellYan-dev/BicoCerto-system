@@ -14,13 +14,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.databind.exc.UnrecognizedPropertyException;
 
 @RestController
 @RequestMapping("/user")
@@ -94,7 +98,7 @@ public class UserController {
 
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("Erro de validação: " + e.getMessage());
+                    .body(e.getMessage());
 
         } catch (SecurityException e) {
 
@@ -108,7 +112,7 @@ public class UserController {
                     .status(HttpStatus.CONFLICT)
                     .body("Email já em uso por outro usuário" + e.getMessage());
 
-        } catch (Exception e) {
+        }  catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro interno ao atualizar usuário."+ e.getMessage());
@@ -137,7 +141,7 @@ public class UserController {
         } catch (IllegalArgumentException e){
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erro de validação"+e.getMessage());
+                    .body(e.getMessage());
 
         } catch (SecurityException e){
 
