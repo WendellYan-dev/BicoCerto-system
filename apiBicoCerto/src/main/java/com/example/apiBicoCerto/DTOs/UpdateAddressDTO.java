@@ -1,6 +1,8 @@
 package com.example.apiBicoCerto.DTOs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "DTO responsável pelo transporte de dados a serem atualizados do endereço")
 public record UpdateAddressDTO(
