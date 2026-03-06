@@ -56,6 +56,11 @@ public class RegisterWorkService {
 
         assert loggedUser != null;
 
+        if (loggedUser.getStatus().equals(UserStatus.INATIVO)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Usuário inativado.");
+        }
+
         InformalWorker informalWorker = informalWorkerRepository
                 .findByUserId(loggedUser.getId());
 
@@ -63,10 +68,7 @@ public class RegisterWorkService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Usuário não é um prestador de serviços");
         }
-        if (loggedUser.getStatus().equals(UserStatus.INATIVO)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Usuário inativado.");
-        }
+
 
         if (registerWorkDTO.title() == null || registerWorkDTO.title().isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

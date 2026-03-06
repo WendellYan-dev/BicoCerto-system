@@ -94,7 +94,7 @@ public class WorkController {
 
         try {
             editWorkService.editWork(id, editWorkDTO);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
 
         } catch (ResponseStatusException ex) {
             return ResponseEntity

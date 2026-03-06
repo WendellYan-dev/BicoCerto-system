@@ -28,8 +28,8 @@ public record UpdateUserDTO(
         @Schema(description = "Senha do usuário", example = "123456")
         String password,
 
-        @Schema(description = "URL da foto de perfil")
-        String profilePhoto,
+        @Schema(description = "Escolha se o usuário quer remover ou não a foto de perfil atual", example = "true")
+        Boolean removePhoto,
 
         @Schema(description = "Status atual do usuário", example = "ATIVO")
         UserStatus status

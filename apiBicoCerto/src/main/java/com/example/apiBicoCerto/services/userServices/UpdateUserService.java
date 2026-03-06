@@ -3,6 +3,7 @@ package com.example.apiBicoCerto.services.userServices;
 import com.example.apiBicoCerto.DTOs.UpdateUserDTO;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.repositories.UserRepository;
+import com.example.apiBicoCerto.utils.GenerateLinkService;
 import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -29,8 +32,11 @@ public class UpdateUserService {
     @Autowired
     private VerificationService verificationService;
 
+    @Autowired
+    private GenerateLinkService generateLinkService;
 
-    public void updateUser( UpdateUserDTO update){
+
+    public void updateUser(UpdateUserDTO update, MultipartFile profilePhoto) throws IOException {
         //procura o usuário se ele já existe
 
         Authentication authentication = SecurityContextHolder
@@ -66,11 +72,11 @@ public class UpdateUserService {
                 !update.email().equals(user.getEmail())) {
 
             if (!verificationService.isValidEmail(update.email())) {
-                throw new IllegalArgumentException("Formato de email inválido");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Formato de email inválido");
             }
 
             if (userRepository.existsByEmail(update.email())) {
-                throw new IllegalStateException("Email já em uso!");
+                throw new IllegalStateException("Email já em uso");
             }
 
             user.setEmail(update.email());
@@ -80,7 +86,7 @@ public class UpdateUserService {
         if (update.password() != null && !passwordEncoder.matches(update.password(), user.getPassword())) {
             //aqui posso chamar algum método de retorno de senha já foi usada anteriormente,por exemplo
             if(!verificationService.isValidPassword(update.password())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha inválida");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha inválida! Senha deve ter pelo menos 8 dígitos");
             }
             String encoded = passwordEncoder.encode(update.password());
             user.setPassword(encoded);
@@ -100,13 +106,27 @@ public class UpdateUserService {
             user.setPhoneNumber(update.phoneNumber());
         }
 
-        if(update.profilePhoto()!=null) {
-            user.setProfilePhoto(update.profilePhoto());
-        }
-
         if(update.status()!=null) {
             user.setStatus(update.status());
         }
+
+        Boolean removePhoto = update.removePhoto();
+
+        if(Boolean.TRUE.equals(removePhoto) && profilePhoto!=null && !profilePhoto.isEmpty()){
+            throw new IllegalStateException("Não é permitido remover e enviar nova foto simultaneamente");
+        }
+
+        //para remover a imagem do banco
+        if(Boolean.TRUE.equals(removePhoto)){
+            user.setProfilePhoto(null);
+        }
+
+        //adicionar imagem atualizada no banco
+        else if(profilePhoto!=null && !profilePhoto.isEmpty()){
+            user.setProfilePhoto(generateLinkService.uploadImage(profilePhoto));
+        }
+
+        //caso fuja das 3 verificações anteriores,a foto atual continua no banco
 
         userRepository.save(user);
 
