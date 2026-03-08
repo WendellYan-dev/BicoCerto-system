@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -21,10 +22,11 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_booking")
     private Integer id;
 
     @Column(name = "booking_date",nullable = false)
-    private LocalDateTime bookingDate;
+    private LocalDate bookingDate;
 
     @Column(name = "start_time",nullable = false)
     private LocalTime startTime;
@@ -44,7 +46,7 @@ public class Booking {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "id_service", nullable = false)
+    @JoinColumn(name = "id_work", nullable = false)
     private Work work;
 
     @ManyToOne

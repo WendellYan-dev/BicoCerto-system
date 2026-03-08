@@ -1,10 +1,13 @@
 package com.example.apiBicoCerto.services.bookingServices;
 
 import com.example.apiBicoCerto.DTOs.RegisterBookingDTO;
+import com.example.apiBicoCerto.entities.Availability;
 import com.example.apiBicoCerto.entities.Booking;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.entities.Work;
 import com.example.apiBicoCerto.enums.BookingStatus;
+import com.example.apiBicoCerto.enums.DayOfWeekAvailability;
+import com.example.apiBicoCerto.repositories.AvailabilityRepository;
 import com.example.apiBicoCerto.repositories.BookingRepository;
 import com.example.apiBicoCerto.repositories.WorkRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -27,6 +33,9 @@ public class RegisterBookingService {
 
     @Autowired
     private WorkRepository workRepository;
+
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
 
     public void registerBooking(RegisterBookingDTO registerBookingDTO){
 
@@ -49,6 +58,77 @@ public class RegisterBookingService {
         Work work = workRepository.findById(registerBookingDTO.idService())
                 .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado"));
 
+        if(registerBookingDTO.bookingDate().isBefore(LocalDate.now())){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Não é possível agendar em datas passadas"
+            );
+        }
+
+        if(!registerBookingDTO.startTime().isBefore(registerBookingDTO.endTime())){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Horário inicial deve ser antes do horário final"
+            );
+        }
+
+        DayOfWeekAvailability dayOfWeekAvailability =
+                DayOfWeekAvailability.fromJavaDayOfWeek(
+                        registerBookingDTO.bookingDate().getDayOfWeek()
+                );
+
+//        List<Availability> availabilities =
+//                availabilityRepository.findByInformalWorker_IdInformalWorkerAndDayOfWeek(
+//                        work.getInformalWorker().getIdInformalWorker(),
+//                        dayOfWeekAvailability
+//                );
+//
+//        if (availabilities.isEmpty()) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST,
+//                    "O prestador não trabalha neste dia"
+//            );
+//        }
+//
+//        boolean dentroDaAgenda = availabilities.stream().anyMatch(a ->
+//                !registerBookingDTO.startTime().isBefore(a.getStartTime()) &&
+//                        !registerBookingDTO.endTime().isAfter(a.getEndTime())
+//        );
+
+//        if (!dentroDaAgenda) {
+//            throw new ResponseStatusException(
+//                    HttpStatus.BAD_REQUEST,
+//                    "Horário fora da disponibilidade do prestador"
+//            );
+//        }
+        if (!availabilityRepository.existsByInformalWorker_IdInformalWorkerAndDayOfWeekAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
+                work.getInformalWorker().getIdInformalWorker(),
+                dayOfWeekAvailability,
+                registerBookingDTO.startTime(),
+                registerBookingDTO.endTime()
+        )){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Horário fora da disponibilidade do prestador"
+            );
+        }
+
+        boolean conflito = bookingRepository
+                .existsByInformalWorker_IdInformalWorkerAndBookingDateAndBookingStatusNotAndStartTimeLessThanAndEndTimeGreaterThan(
+                        work.getInformalWorker().getIdInformalWorker(),
+                        registerBookingDTO.bookingDate(),
+                        BookingStatus.CANCELADO,
+                        registerBookingDTO.endTime(),
+                        registerBookingDTO.startTime()
+                );
+
+        if (conflito) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Já existe um agendamento nesse horário"
+            );
+        }
+
         Booking booking = new Booking();
         booking.setBookingDate(registerBookingDTO.bookingDate());
         booking.setBookingStatus(BookingStatus.SOLICITADO);
@@ -58,5 +138,7 @@ public class RegisterBookingService {
         booking.setUser(loggedUser);
         booking.setWork(work);
         booking.setInformalWorker(work.getInformalWorker());
+
+        bookingRepository.save(booking);
     }
 }
