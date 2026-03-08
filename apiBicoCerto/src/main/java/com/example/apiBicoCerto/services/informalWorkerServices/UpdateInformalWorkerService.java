@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -23,7 +24,7 @@ public class UpdateInformalWorkerService {
     @Autowired
     InformalWorkerRepository informalWorkerRepository;
 
-    public UpResponseIformalWorkerDTO updateProfile(UpdateInformalWorkerDTO update){
+    public UpResponseIformalWorkerDTO updateProfile(UpdateInformalWorkerDTO update) {
 
         Authentication authentication = SecurityContextHolder
                 .getContext()
@@ -52,6 +53,8 @@ public class UpdateInformalWorkerService {
         }
         if(update.serviceCategory()!=null){
             informalWorker.setServiceCategory(update.serviceCategory());
+        } else {
+            throw new IllegalArgumentException("A categoria do serviço não pode estar em branco");
         }
 
         if(update.aboutMe()!=null){
@@ -60,6 +63,8 @@ public class UpdateInformalWorkerService {
 
         if(update.localService()!=null){
             informalWorker.setLocalService(update.localService());
+        } else {
+            throw new IllegalArgumentException("O local do serviço não pode estar em branco");
         }
 
         informalWorkerRepository.save(informalWorker);
