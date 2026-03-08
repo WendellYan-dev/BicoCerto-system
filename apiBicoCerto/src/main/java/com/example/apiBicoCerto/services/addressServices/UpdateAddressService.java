@@ -20,23 +20,23 @@ public class UpdateAddressService {
 
         Address address = addressRepository.findById(idAddress).orElseThrow(()-> new NotFoundException("Endereço não encontrado"));
 
-        if (update.postalCode() == null) {
+        if (update.postalCode() == null || update.postalCode().isBlank()) {
             throw new IllegalArgumentException("CEP é obrigatório");
         }
 
-        if (update.street() == null) {
+        if (update.street() == null || update.street().isBlank()) {
             throw new IllegalArgumentException("Logradouro é obrigatório");
         }
 
-        if (update.neighborhood() == null) {
+        if (update.neighborhood() == null || update.neighborhood().isBlank()) {
             throw new IllegalArgumentException("Bairro é obrigatório");
         }
 
-        if (update.state() == null) {
+        if (update.state() == null || update.state().isBlank()) {
             throw new IllegalArgumentException("UF é obrigatório");
         }
 
-        if (update.number() == null) {
+        if (update.number() == null || update.number().isBlank()) {
             throw new IllegalArgumentException("Número é obrigatório");
         }
 

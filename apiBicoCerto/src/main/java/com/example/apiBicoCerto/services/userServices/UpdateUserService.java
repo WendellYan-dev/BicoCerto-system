@@ -60,15 +60,19 @@ public class UpdateUserService {
         User user = userRepository.findById(loggedUser.getId()).orElseThrow(()-> new NotFoundException("Usuário não encontrado"));
 
         //verificações if para evitar sobrescrever no banco com valor nulo
-        if(update.firstName()!=null){
+        if(update.firstName()!=null && !update.firstName().isBlank()){
             user.setFirstName(update.firstName());
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O primeironome não pode estar em branco");
         }
 
-        if(update.lastName()!=null){
+        if(update.lastName()!=null && !update.lastName().isBlank()){
             user.setLastName(update.lastName());
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O sobrenome não pode estar em branco");
         }
 
-        if (update.email() != null &&
+        if ((update.email() != null && !update.email().isBlank()) &&
                 !update.email().equals(user.getEmail())) {
 
             if (!verificationService.isValidEmail(update.email())) {
