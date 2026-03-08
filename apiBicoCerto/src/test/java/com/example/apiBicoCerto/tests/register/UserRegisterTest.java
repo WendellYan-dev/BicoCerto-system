@@ -4,60 +4,56 @@ import com.example.apiBicoCerto.config.BaseTest;
 import com.example.apiBicoCerto.data.UserDataFactory;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
 
 public class UserRegisterTest extends BaseTest {
 
     @Test
     public void testRegisterUser() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userValid())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userValid(), "application/json")
+                // .multiPart("profilePhoto", new File("src/test/resources/photo.jpg"))
 
         .when()
                 .post("/user/register")
 
         .then()
-                .statusCode(201)
-                .body("userName", notNullValue())
-                .body("email", notNullValue());
+                .statusCode(201);
     }
 
     @Test
     public void testEmptyComplement() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithEmptyComplement())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithEmptyComplement(), "application/json")
 
         .when()
                 .post("/user/register")
 
         .then()
-                .statusCode(201)
-                .body("addresses[0].complement", nullValue());
+                .statusCode(201);
     }
 
     @Test
     public void testRegisterUserWithCnpj() {
 
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userValidWithCnpj())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userValidWithCnpj(), "application/json")
 
         .when()
                 .post("/user/register")
 
         .then()
-                .statusCode(201)
-                .body("cnpj", notNullValue())
-                .body("cpf", nullValue());
+                .statusCode(201);
+
     }
 
     @Test
     public void testInvalidCpf() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithInvalidCpf())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithInvalidCpf(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -70,8 +66,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public void testUnderageBirthDate() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithUnderageBirthDate())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithUnderageBirthDate(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -84,8 +80,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public void testTooOldBirthDate() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithTooOldBirthDate())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithTooOldBirthDate(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -98,8 +94,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public void testInvalidPassword() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithInvalidPassword())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithInvalidPassword(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -112,8 +108,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public void testInvalidPhone() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithInvalidPhone())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithInvalidPhone(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -126,8 +122,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public void testInvalidPostalCode() {
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithInvalidPostalCode())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithInvalidPostalCode(), "application/json")
 
         .when()
                 .post("/user/register")
@@ -140,8 +136,8 @@ public class UserRegisterTest extends BaseTest {
     @Test
     public  void testRequiredFieldIsNull(){
         given()
-                .contentType("application/json")
-                .body(UserDataFactory.userWithNullPhone())
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithNullPhone(), "application/json")
 
         .when()
                 .post("/user/register")

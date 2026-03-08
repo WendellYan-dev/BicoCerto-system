@@ -9,21 +9,20 @@ public class UserDataFactory {
 
     public static String userValid() {
 
-        long unique = System.currentTimeMillis();
+        long unique = System.currentTimeMillis() % 100000;
         String cpf = CpfGenerator.generateCpf();
 
         return """
             {
-                "userName": "igor%s",
-                "email": "igor%s@email.com",
-                "firstName": "Igor",
+                "userName": "Fulano%s",
+                "email": "Fulano%s@email.com",
+                "firstName": "Fulano",
                 "lastName": "Silva",
                 "phoneNumber": "79988123456",
                 "birthDate": "2000-05-10",
                 "password": "Senha@123",
                 "cpf": "%s",
                 "cnpj": null,
-                "status": "ATIVO",
                 "addresses": [
                     {
                       "postalCode": "49000000",
@@ -34,8 +33,7 @@ public class UserDataFactory {
                       "complement": "Apto 2",
                       "isPrimary": true
                     }
-                ],
-                "userType": "CLIENTE"
+                ]
             }
         """.formatted(unique, unique, cpf);
     }
@@ -43,11 +41,6 @@ public class UserDataFactory {
     public static String userWithEmptyComplement() {
         return userValid().replace("\"complement\": \"Apto 2\""
                 , "\"complement\": null");
-    }
-
-    public static String userWithInvalidCpf() {
-        return userValid().replace("52998224725"
-                , "12345678900");
     }
 
     public static String userWithUnderageBirthDate() {
@@ -84,21 +77,20 @@ public class UserDataFactory {
 
     public static String userValidWithCnpj() {
 
-        long unique = System.currentTimeMillis();
+        long unique = System.currentTimeMillis() % 100000;
         String cnpj = CnpjGenerator.generateCnpj();
 
         return """
             {
-                "userName": "igor%s",
-                "email": "igor%s@email.com",
-                "firstName": "Igor",
+                "userName": "Fulano%s",
+                "email": "Fulano%s@email.com",
+                "firstName": "Fulano",
                 "lastName": "Silva",
                 "phoneNumber": "79988123456",
                 "birthDate": "2000-05-10",
                 "password": "Senha@123",
                 "cpf": null,
                 "cnpj": "%s",
-                "status": "ATIVO",
                 "addresses": [
                     {
                       "postalCode": "49000000",
@@ -109,9 +101,38 @@ public class UserDataFactory {
                       "complement": "Apto 2",
                       "isPrimary": true
                     }
-                ],
-                "userType": "CLIENTE"
+                ]
             }
         """.formatted(unique, unique, cnpj);
+    }
+
+    public static String userWithInvalidCpf() {
+
+        long unique = System.currentTimeMillis() % 100000;
+
+        return """
+        {
+            "userName": "Fulano%s",
+            "email": "Fulano%s@email.com",
+            "firstName": "Fulano",
+            "lastName": "Silva",
+            "phoneNumber": "79988123456",
+            "birthDate": "2000-05-10",
+            "password": "Senha@123",
+            "cpf": "12345678900",
+            "cnpj": null,
+            "addresses": [
+                {
+                  "postalCode": "49000000",
+                  "street": "Rua A",
+                  "neighborhood": "Centro",
+                  "state": "SE",
+                  "number": "100",
+                  "complement": "Apto 2",
+                  "isPrimary": true
+                }
+            ]
+        }
+    """.formatted(unique, unique);
     }
 }
