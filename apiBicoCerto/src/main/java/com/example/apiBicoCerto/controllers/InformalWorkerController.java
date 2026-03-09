@@ -42,7 +42,8 @@ public class InformalWorkerController {
 
             registerInformalWorkerService.registerInformalWorker(informalWorkerDTO,profilePhoto);
 
-            return ResponseEntity.ok("Prestador cadastrado com sucesso");
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Prestador cadastrado com sucesso");
 
         } catch (ResponseStatusException ex) {
 

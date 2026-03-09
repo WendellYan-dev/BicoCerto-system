@@ -3,6 +3,9 @@ package com.example.apiBicoCerto.tests.register;
 import com.example.apiBicoCerto.config.BaseTest;
 import com.example.apiBicoCerto.data.UserDataFactory;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
 import static io.restassured.RestAssured.*;
 
 public class UserRegisterTest extends BaseTest {
@@ -12,12 +15,25 @@ public class UserRegisterTest extends BaseTest {
         given()
                 .contentType("multipart/form-data")
                 .multiPart("User", UserDataFactory.userValid(), "application/json")
-                // .multiPart("profilePhoto", new File("src/test/resources/photo.jpg"))
 
         .when()
                 .post("/user/register")
 
         .then()
+                .statusCode(201);
+    }
+
+    // Teste para criar um usuário fixo para testar o login
+    @Test
+    public void testRegisterUserForTestLogin() {
+        given()
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userForTestLogin(), "application/json")
+
+                .when()
+                .post("/user/register")
+
+                .then()
                 .statusCode(201);
     }
 

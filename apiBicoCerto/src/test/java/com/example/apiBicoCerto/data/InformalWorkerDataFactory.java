@@ -4,11 +4,14 @@ public class InformalWorkerDataFactory {
 
     public static String informalWorkerValid() {
         return UserDataFactory.userValid()
-                .replace("\"userType\": \"CLIENTE\"", """
-                        "userType": "PRESTADOR",
-                        "serviceCategory": "GARCOM",
-                        "aboutMe": "Atuo como garcom em eventos corporativos, casamentos e formaturas ha mais de 8 anos.",
-                        "localService": "Aracaju - SE"
+                .replace("Cliente", "InforWorker")
+                .replace("}",
+                        """
+                            ,
+                            "serviceCategory": "GARCOM",
+                            "aboutMe": "Atuo como garcom em eventos a 8 anos",
+                            "localService": "Aracaju - SE"
+                        }
                         """);
     }
 

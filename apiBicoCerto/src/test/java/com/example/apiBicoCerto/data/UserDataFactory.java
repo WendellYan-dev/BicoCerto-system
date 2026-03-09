@@ -14,9 +14,9 @@ public class UserDataFactory {
 
         return """
             {
-                "userName": "Fulano%s",
-                "email": "Fulano%s@email.com",
-                "firstName": "Fulano",
+                "userName": "Cliente%s",
+                "email": "Cliente%s@email.com",
+                "firstName": "Cliente",
                 "lastName": "Silva",
                 "phoneNumber": "79988123456",
                 "birthDate": "2000-05-10",
@@ -82,9 +82,9 @@ public class UserDataFactory {
 
         return """
             {
-                "userName": "Fulano%s",
-                "email": "Fulano%s@email.com",
-                "firstName": "Fulano",
+                "userName": "Cliente%s",
+                "email": "Cliente%s@email.com",
+                "firstName": "Cliente",
                 "lastName": "Silva",
                 "phoneNumber": "79988123456",
                 "birthDate": "2000-05-10",
@@ -112,9 +112,9 @@ public class UserDataFactory {
 
         return """
         {
-            "userName": "Fulano%s",
-            "email": "Fulano%s@email.com",
-            "firstName": "Fulano",
+            "userName": "Cliente%s",
+            "email": "Cliente%s@email.com",
+            "firstName": "Cliente",
             "lastName": "Silva",
             "phoneNumber": "79988123456",
             "birthDate": "2000-05-10",
@@ -134,5 +134,35 @@ public class UserDataFactory {
             ]
         }
     """.formatted(unique, unique);
+    }
+
+    public static String userForTestLogin() {
+
+        String cpf = CpfGenerator.generateCpf();
+
+        return """
+            {
+                "userName": "igor123",
+                "email": "igor.silva@email.com",
+                "firstName": "Igor",
+                "lastName": "Silva",
+                "phoneNumber": "79988123456",
+                "birthDate": "2000-05-10",
+                "password": "Senha@123",
+                "cpf": "%s",
+                "cnpj": null,
+                "addresses": [
+                    {
+                      "postalCode": "49000000",
+                      "street": "Rua A",
+                      "neighborhood": "Centro",
+                      "state": "SE",
+                      "number": "100",
+                      "complement": "Apto 2",
+                      "isPrimary": true
+                    }
+                ]
+            }
+        """.formatted(cpf);
     }
 }
