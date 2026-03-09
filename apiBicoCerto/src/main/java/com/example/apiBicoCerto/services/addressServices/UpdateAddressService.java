@@ -5,6 +5,7 @@ import com.example.apiBicoCerto.DTOs.UpdateAddressResponseDTO;
 import com.example.apiBicoCerto.entities.Address;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import com.example.apiBicoCerto.repositories.AddressRepository;
+import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,20 @@ public class UpdateAddressService {
     @Autowired
     AddressRepository addressRepository;
 
+    @Autowired
+    private VerificationService verificationService;
+
     public UpdateAddressResponseDTO updateAddress(Integer idAddress, UpdateAddressDTO update){
 
         Address address = addressRepository.findById(idAddress).orElseThrow(()-> new NotFoundException("Endereço não encontrado"));
 
         if (update.postalCode() == null || update.postalCode().isBlank()) {
             throw new IllegalArgumentException("CEP é obrigatório");
+        }
+        if(verificationService.isValidPostalCode(update.postalCode())){
+            address.setPostalCode(update.postalCode());
+        } else {
+            throw new IllegalArgumentException("CEP inválido");
         }
 
         if (update.street() == null || update.street().isBlank()) {
@@ -36,19 +45,27 @@ public class UpdateAddressService {
             throw new IllegalArgumentException("UF é obrigatório");
         }
 
+        if(verificationService.isValidState(update.state())){
+            address.setState(update.state());
+        } else {
+            throw new IllegalArgumentException("Estado inválido");
+        }
+
         if (update.number() == null || update.number().isBlank()) {
             throw new IllegalArgumentException("Número é obrigatório");
+        }
+
+        if(verificationService.isValidNumber(update.number())){
+            address.setNumber(update.number());
         }
 
         if (update.isPrimary() == null) {
             throw new IllegalArgumentException("Se é principal ou não é obrigatório");
         }
 
-        address.setPostalCode(update.postalCode());
+
         address.setStreet(update.street());
         address.setNeighborhood(update.neighborhood());
-        address.setState(update.state());
-        address.setNumber(update.number());
         address.setComplement(update.complement());
         address.setIsPrimary(update.isPrimary());
 
