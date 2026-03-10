@@ -60,40 +60,55 @@ public class UpdateUserService {
         User user = userRepository.findById(loggedUser.getId()).orElseThrow(()-> new NotFoundException("Usuário não encontrado"));
 
         //verificações if para evitar sobrescrever no banco com valor nulo
-        if(update.firstName()!=null && !update.firstName().isBlank()){
+        if(update.firstName()!=null){
+            if(update.firstName().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O primeironome não pode estar em branco");
+            }
             user.setFirstName(update.firstName());
-        }else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O primeironome não pode estar em branco");
         }
 
-        if(update.lastName()!=null && !update.lastName().isBlank()){
+        if(update.lastName()!=null){
+            if(update.lastName().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O sobrenome não pode estar em branco");
+            }
             user.setLastName(update.lastName());
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O sobrenome não pode estar em branco");
         }
 
-        if ((update.email() != null && !update.email().isBlank()) &&
-                !update.email().equals(user.getEmail())) {
-
-            if (!verificationService.isValidEmail(update.email())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Formato de email inválido");
+        if (update.email() != null) {
+            if(update.email().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"O email não pode estar em branco");
             }
 
-            if (userRepository.existsByEmail(update.email())) {
-                throw new IllegalStateException("Email já em uso");
-            }
+            if(!update.email().equals(user.getEmail())){
+                if (!verificationService.isValidEmail(update.email())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Formato de email inválido");
+                }
 
-            user.setEmail(update.email());
+                if (userRepository.existsByEmail(update.email())) {
+                    throw new IllegalStateException("Email já em uso");
+                }
+
+                user.setEmail(update.email());
+            }
         }
 
-        //o Spring faz o hash da senha informada usando o mesmo salt armazenado para comparar a senha atual com a que quero alterar
-        if (update.password() != null && !passwordEncoder.matches(update.password(), user.getPassword())) {
-            //aqui posso chamar algum método de retorno de senha já foi usada anteriormente,por exemplo
+
+        if (update.password() != null) {
+
+            if(update.password().isBlank()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"A senha não pode estar em branco");
+            }
+            //o Spring faz o hash da senha informada usando o mesmo salt armazenado para comparar a senha atual com a que quero alterar
+            if(passwordEncoder.matches(update.password(), user.getPassword())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"A nova senha não pode ser igual à senha atual");
+            }
+
             if(!verificationService.isValidPassword(update.password())){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha inválida! Senha deve ter pelo menos 8 dígitos");
             }
             String encoded = passwordEncoder.encode(update.password());
             user.setPassword(encoded);
+
         }
 
         if(update.birthDate()!=null) {
@@ -104,6 +119,9 @@ public class UpdateUserService {
         }
 
         if(update.phoneNumber()!=null) {
+            if (update.phoneNumber().isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Telefone não pode ser vazio");
+            }
             if(!verificationService.isValidPhone(update.phoneNumber())){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de telefone inválido");
             }

@@ -4,6 +4,7 @@ import com.example.apiBicoCerto.DTOs.UpResponseIformalWorkerDTO;
 import com.example.apiBicoCerto.DTOs.UpdateInformalWorkerDTO;
 import com.example.apiBicoCerto.entities.InformalWorker;
 import com.example.apiBicoCerto.entities.User;
+import com.example.apiBicoCerto.enums.ServiceCategories;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
 import jakarta.transaction.Transactional;
@@ -52,6 +53,10 @@ public class UpdateInformalWorkerService {
             throw new NotFoundException("Prestador de Serviços não encontrado");
         }
         if(update.serviceCategory()!=null){
+
+            if(ServiceCategories.fromValue(String.valueOf(update.serviceCategory()))==null){
+                throw new IllegalArgumentException("Categoria inválida");
+            }
             informalWorker.setServiceCategory(update.serviceCategory());
         } else {
             throw new IllegalArgumentException("A categoria do serviço não pode estar em branco");
@@ -62,6 +67,9 @@ public class UpdateInformalWorkerService {
         }
 
         if(update.localService()!=null){
+            if(update.localService().isBlank()){
+                throw new IllegalArgumentException("O local do serviço não pode estar em branco");
+            }
             informalWorker.setLocalService(update.localService());
         } else {
             throw new IllegalArgumentException("O local do serviço não pode estar em branco");
