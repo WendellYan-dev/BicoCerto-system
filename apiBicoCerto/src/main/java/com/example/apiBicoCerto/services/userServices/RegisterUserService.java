@@ -175,6 +175,8 @@ public class RegisterUserService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número é obrigatório");
                 }
 
+                address.setNumber(addressDTO.number());
+
                 address.setComplement(addressDTO.complement());
 
                 address.setIsPrimary(addressDTO.isPrimary());

@@ -62,6 +62,7 @@ public class UpdateAddressService {
 
         address.setStreet(update.street());
         address.setNeighborhood(update.neighborhood());
+        address.setNumber(update.number());
         address.setComplement(update.complement());
         address.setIsPrimary(update.isPrimary());
 
