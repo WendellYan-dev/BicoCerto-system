@@ -18,28 +18,13 @@ public class UpdateInformalWorkerDataFactory {
                 ,"ELETRICISTA");
     }
 
-    public static String updateWithNullServiceCaterory(){
-        return updateInfoWorkerValid().replace("\"JARDINEIRO\""
-                ,"null");
-    }
-
     public static String updateWithEmptyAboutMe(){
         return updateInfoWorkerValid().replace("Tenho 5 anos de experiência como jardineiro"
                 ,"  ");
     }
 
-    public static String updateWithNullAboutMe(){
-        return updateInfoWorkerValid().replace("\"Tenho 5 anos de experiência como jardineiro\""
-                ,"null");
-    }
-
     public static String updateWithEmptyLocalService(){
         return updateInfoWorkerValid().replace("Itabaiana - SE"
                 ,"    ");
-    }
-
-    public static String updateWithNullLocalService(){
-        return updateInfoWorkerValid().replace("\"Itabaiana - SE\""
-                ,"null");
     }
 }

@@ -10,6 +10,9 @@ import static io.restassured.RestAssured.*;
 
 public class UserRegisterTest extends BaseTest {
 
+    // Testar no caso de já exisitr um usuário com userName, email ou cpf existente no sistema
+
+
     @Test
     public void testRegisterUser() {
         given()

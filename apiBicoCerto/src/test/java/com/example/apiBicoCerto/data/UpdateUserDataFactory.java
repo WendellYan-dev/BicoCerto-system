@@ -22,11 +22,6 @@ public class UpdateUserDataFactory {
                 , "novoEmailemail.com");
     }
 
-    public static String updateWithEmptyEmail() {
-        return updateUserValid().replace("novoEmail@email.com"
-                , "");
-    }
-
     public static String updateWithInvalidPhoneNumber() {
         return updateUserValid().replace("79988123210"
                 , "7998812321");
@@ -35,11 +30,6 @@ public class UpdateUserDataFactory {
     public static String updateWithUnderageBirthDate() {
         return updateUserValid().replace("2000-05-15"
                 , "2015-05-10");
-    }
-
-    public static String updateWithEmptyBirthDate() {
-        return updateUserValid().replace("\"2000-05-15\""
-                , "n");
     }
 
     public static String updateWithTooOldBirthDate() {
