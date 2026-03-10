@@ -7,6 +7,7 @@ import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.enums.ServiceCategories;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
+import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,10 @@ import java.util.Objects;
 public class UpdateInformalWorkerService {
 
     @Autowired
-    InformalWorkerRepository informalWorkerRepository;
+    private InformalWorkerRepository informalWorkerRepository;
+
+    @Autowired
+    private VerificationService verificationService;
 
     public UpResponseIformalWorkerDTO updateProfile(UpdateInformalWorkerDTO update) {
 
@@ -52,8 +56,10 @@ public class UpdateInformalWorkerService {
         if (informalWorker == null) {
             throw new NotFoundException("Prestador de Serviços não encontrado");
         }
+
         if(update.serviceCategory()!=null){
-            informalWorker.setServiceCategory(update.serviceCategory());
+            ServiceCategories category = verificationService.categoriesVerification(update.serviceCategory());
+            informalWorker.setServiceCategory(category);
         }
 
         if(update.aboutMe()!=null){

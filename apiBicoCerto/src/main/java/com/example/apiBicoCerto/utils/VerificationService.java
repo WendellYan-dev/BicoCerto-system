@@ -1,5 +1,6 @@
 package com.example.apiBicoCerto.utils;
 
+import com.example.apiBicoCerto.enums.ServiceCategories;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +12,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.Hashtable;
 
 @Service
@@ -207,5 +209,20 @@ public class VerificationService {
         }
 
         return true;
+    }
+
+    public ServiceCategories categoriesVerification(String category){
+
+        if(category == null){
+            return null;
+        }
+
+        try {
+            return ServiceCategories.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e){
+            throw new IllegalArgumentException("Categoria inválida! As categorias permitidas são: "
+                    + Arrays.toString(ServiceCategories.values()));
+        }
+
     }
 }
