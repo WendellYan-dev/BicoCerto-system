@@ -54,7 +54,10 @@ public class RegisterAvailabilityService {
                 .findByUserId(loggedUser.getId());
 
         if (informalWorker == null) {
-            throw new NotFoundException("Prestador de Serviços não encontrado");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Apenas Prestadores podem cadastrar agenda."
+            );
         }
 
         validateInternalConflicts(availabilityDTOList);

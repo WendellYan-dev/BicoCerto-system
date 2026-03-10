@@ -1,7 +1,6 @@
 package com.example.apiBicoCerto.services.bookingServices;
 
 import com.example.apiBicoCerto.DTOs.RegisterBookingDTO;
-import com.example.apiBicoCerto.entities.Availability;
 import com.example.apiBicoCerto.entities.Booking;
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.entities.Work;
@@ -10,6 +9,7 @@ import com.example.apiBicoCerto.enums.DayOfWeekAvailability;
 import com.example.apiBicoCerto.repositories.AvailabilityRepository;
 import com.example.apiBicoCerto.repositories.BookingRepository;
 import com.example.apiBicoCerto.repositories.WorkRepository;
+import com.example.apiBicoCerto.utils.HolidayService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -33,6 +31,9 @@ public class RegisterBookingService {
 
     @Autowired
     private WorkRepository workRepository;
+
+    @Autowired
+    private HolidayService holidayService;
 
     @Autowired
     private AvailabilityRepository availabilityRepository;
@@ -58,11 +59,28 @@ public class RegisterBookingService {
         Work work = workRepository.findById(registerBookingDTO.idService())
                 .orElseThrow(() -> new EntityNotFoundException("Serviço não encontrado"));
 
+        if (Objects.equals(loggedUser.getId(), work.getInformalWorker().getUser().getId())){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Não é possível agendar o seu próprio serviço"
+            );
+        }
+
         if(registerBookingDTO.bookingDate().isBefore(LocalDate.now())){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Não é possível agendar em datas passadas"
             );
+        }
+
+        if (!work.getInformalWorker().getWorksOnHoliday()){
+            //Pode procurar por feriados locais caso queira mudar posteriormente,precisa apenas preencher os campos nulos.
+            if (holidayService.isHoliday(registerBookingDTO.bookingDate(),null,null)){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O Prestador não trabalha em feriados"
+                );
+            }
         }
 
         if(!registerBookingDTO.startTime().isBefore(registerBookingDTO.endTime())){
@@ -76,31 +94,6 @@ public class RegisterBookingService {
                 DayOfWeekAvailability.fromJavaDayOfWeek(
                         registerBookingDTO.bookingDate().getDayOfWeek()
                 );
-
-//        List<Availability> availabilities =
-//                availabilityRepository.findByInformalWorker_IdInformalWorkerAndDayOfWeek(
-//                        work.getInformalWorker().getIdInformalWorker(),
-//                        dayOfWeekAvailability
-//                );
-//
-//        if (availabilities.isEmpty()) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST,
-//                    "O prestador não trabalha neste dia"
-//            );
-//        }
-//
-//        boolean dentroDaAgenda = availabilities.stream().anyMatch(a ->
-//                !registerBookingDTO.startTime().isBefore(a.getStartTime()) &&
-//                        !registerBookingDTO.endTime().isAfter(a.getEndTime())
-//        );
-
-//        if (!dentroDaAgenda) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST,
-//                    "Horário fora da disponibilidade do prestador"
-//            );
-//        }
         if (!availabilityRepository.existsByInformalWorker_IdInformalWorkerAndDayOfWeekAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
                 work.getInformalWorker().getIdInformalWorker(),
                 dayOfWeekAvailability,
