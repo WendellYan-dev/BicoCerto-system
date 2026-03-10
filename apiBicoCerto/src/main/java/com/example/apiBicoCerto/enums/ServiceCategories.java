@@ -29,7 +29,7 @@ public enum ServiceCategories {
                 return category;
             }
         }
-         throw new IllegalArgumentException("Categoria de Serviço inválida: "+ value);
+         return null;
          // 👈 impede o Jackson de quebrar
     }
 

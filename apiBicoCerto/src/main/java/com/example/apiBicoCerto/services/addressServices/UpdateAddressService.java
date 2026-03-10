@@ -3,12 +3,19 @@ package com.example.apiBicoCerto.services.addressServices;
 import com.example.apiBicoCerto.DTOs.UpdateAddressDTO;
 import com.example.apiBicoCerto.DTOs.UpdateAddressResponseDTO;
 import com.example.apiBicoCerto.entities.Address;
+import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import com.example.apiBicoCerto.repositories.AddressRepository;
 import com.example.apiBicoCerto.utils.VerificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -22,7 +29,32 @@ public class UpdateAddressService {
 
     public UpdateAddressResponseDTO updateAddress(Integer idAddress, UpdateAddressDTO update){
 
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || Objects.equals(authentication.getPrincipal(), "anonymousUser")) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Usuário não autenticado. Faça login para continuar."
+            );
+        }
+
+        User loggedUser = (User) authentication.getPrincipal();
+
+        assert loggedUser != null;
+
         Address address = addressRepository.findById(idAddress).orElseThrow(()-> new NotFoundException("Endereço não encontrado"));
+
+        if (!address.getUser().getId().equals(loggedUser.getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Você não tem permissão para alterar este endereço"
+            );
+        }
 
         if (update.postalCode() == null || update.postalCode().isBlank()) {
             throw new IllegalArgumentException("CEP é obrigatório");
