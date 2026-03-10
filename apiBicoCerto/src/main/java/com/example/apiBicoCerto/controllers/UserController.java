@@ -157,6 +157,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Acesso negado"+e.getMessage());
 
+        } catch (ResponseStatusException e){
+
+            return ResponseEntity.status(e.getStatusCode())
+                    .body(e.getReason());
+
         } catch (Exception e){
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
