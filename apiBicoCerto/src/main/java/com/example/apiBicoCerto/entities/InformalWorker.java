@@ -37,8 +37,8 @@ public class InformalWorker{
     @Column(name = "local_service")
     private String localService;
 
-    @Column(name = "works_on_holiday")
-    private Boolean worksOnHoliday;
+    @Column(name = "works_on_holiday", nullable = false)
+    private Boolean worksOnHoliday = false;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "id_user", nullable = false, unique = true)

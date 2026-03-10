@@ -1,6 +1,6 @@
 package com.example.apiBicoCerto.entities;
 
-import com.example.apiBicoCerto.enums.DayOfWeek;
+import com.example.apiBicoCerto.enums.DayOfWeekAvailability;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class Availability {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "day_of_week",nullable = false)
-    private DayOfWeek dayOfWeek;
+    private DayOfWeekAvailability dayOfWeek;
 
     @Column(name = "start_time",nullable = false)
     private LocalTime startTime;
