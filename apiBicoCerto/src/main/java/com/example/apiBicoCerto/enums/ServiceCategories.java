@@ -29,8 +29,8 @@ public enum ServiceCategories {
                 return category;
             }
         }
-
-        return null; // 👈 impede o Jackson de quebrar
+         throw new IllegalArgumentException("Categoria de Serviço inválida: "+ value);
+         // 👈 impede o Jackson de quebrar
     }
 
     @JsonValue

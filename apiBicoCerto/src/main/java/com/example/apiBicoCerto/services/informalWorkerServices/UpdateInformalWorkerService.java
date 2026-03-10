@@ -53,16 +53,13 @@ public class UpdateInformalWorkerService {
             throw new NotFoundException("Prestador de Serviços não encontrado");
         }
         if(update.serviceCategory()!=null){
-
-            if(ServiceCategories.fromValue(String.valueOf(update.serviceCategory()))==null){
-                throw new IllegalArgumentException("Categoria inválida");
-            }
             informalWorker.setServiceCategory(update.serviceCategory());
-        } else {
-            throw new IllegalArgumentException("A categoria do serviço não pode estar em branco");
         }
 
         if(update.aboutMe()!=null){
+            if(update.aboutMe().isBlank()){
+                throw new IllegalArgumentException("O aboutMe não pode estar em branco");
+            }
             informalWorker.setAboutMe(update.aboutMe());
         }
 
@@ -71,8 +68,6 @@ public class UpdateInformalWorkerService {
                 throw new IllegalArgumentException("O local do serviço não pode estar em branco");
             }
             informalWorker.setLocalService(update.localService());
-        } else {
-            throw new IllegalArgumentException("O local do serviço não pode estar em branco");
         }
 
         informalWorkerRepository.save(informalWorker);
