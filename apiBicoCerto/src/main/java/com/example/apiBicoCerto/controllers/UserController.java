@@ -78,7 +78,7 @@ public class UserController {
             description = "Realiza o update parcial de dados de um usuário no sistema"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida com retorno de dados"),
+            @ApiResponse(responseCode = "204", description = "Requisição bem-sucedida com retorno de dados"),
             @ApiResponse(responseCode = "400", description = "Erro de validação nos dados enviados"),
             @ApiResponse(responseCode = "403", description = "Autenticado, mas sem permissão"),
             @ApiResponse(responseCode = "409", description = "Regra de negócio violada"),
@@ -134,7 +134,7 @@ public class UserController {
             description = "Realiza o update parcial ou total de dados do endereço no sistema"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Requisição bem-sucedida com retorno de dados"),
+            @ApiResponse(responseCode = "204", description = "Requisição bem-sucedida com retorno de dados"),
             @ApiResponse(responseCode = "400", description = "Erro de validação nos dados enviados"),
             @ApiResponse(responseCode = "403", description = "Autenticado, mas sem permissão"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")

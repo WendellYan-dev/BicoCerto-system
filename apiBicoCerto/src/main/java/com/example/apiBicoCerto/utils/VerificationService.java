@@ -208,11 +208,4 @@ public class VerificationService {
 
         return true;
     }
-
-    public boolean isValidNumber(String number){
-        if(!number.matches("\\d+")){
-            throw new IllegalArgumentException("O campo de número da casa deve ser numérico");
-        }
-        return true;
-    }
 }

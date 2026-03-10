@@ -55,10 +55,6 @@ public class UpdateAddressService {
             throw new IllegalArgumentException("Número é obrigatório");
         }
 
-        if(verificationService.isValidNumber(update.number())){
-            address.setNumber(update.number());
-        }
-
         if (update.isPrimary() == null) {
             throw new IllegalArgumentException("Se é principal ou não é obrigatório");
         }
