@@ -171,10 +171,12 @@ public class RegisterUserService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado é obrigatório");
                 }
 
-                if (addressDTO.number() != null) {
-                    address.setNumber(addressDTO.number());
-                } else {
+                if (addressDTO.number() == null || addressDTO.number().isBlank()) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Número é obrigatório");
+                }
+
+                if(verificationService.isValidNumber(addressDTO.number())){
+                    address.setNumber(addressDTO.number());
                 }
 
                 address.setComplement(addressDTO.complement());
