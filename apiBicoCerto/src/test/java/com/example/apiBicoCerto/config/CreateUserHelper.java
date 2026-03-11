@@ -8,69 +8,55 @@ import static io.restassured.RestAssured.given;
 
 public class CreateUserHelper {
 
-    public static UserTestContext createUserAndLogin(){
+    public static UserTestContext createUserAndLogin() {
 
-        Integer addressId =
-                given()
-                        .contentType("multipart/form-data")
-                        .multiPart("User",
-                                UserDataFactory.userForTestLogin(), "application/json")
+        UserTestDTO user = UserDataFactory.userValidComplex();
 
-                .when()
-                        .post("/user/register")
-
-                .then()
-                        .log().body()
-                        .statusCode(201)
-                        .extract()
-                        .jsonPath()
-                        .getInt("addresses[0].id");
-
-        String token =
-                given()
-                        .contentType("application/json")
-                        .body(LoginDataFactory.loginValid())
-
-                .when()
-                        .post("/auth/login")
-
-                .then()
-                        .extract()
-                        .jsonPath().getString("token");
+        Integer addressId = register("/user/register", user.json());
+        String token = login(user.email(), user.password());
 
         return new UserTestContext(token, addressId);
     }
 
-    public static UserTestContext createInfoWorkerAndLogin(){
+    public static UserTestContext createInfoWorkerAndLogin() {
 
-        Integer addressId =
-                given()
-                        .contentType("multipart/form-data")
-                        .multiPart("User",
-                                InformalWorkerDataFactory.informalWorkerValid(), "application/json")
+        UserTestDTO worker = InformalWorkerDataFactory.informalWorkerValidComplex();
 
-                        .when()
-                        .post("/informalWorker/register")
-
-                        .then()
-                        .log().body()
-                        .statusCode(201)
-                        .extract()
-                        .jsonPath()
-                        .getInt("addresses[0].id");
-
-        String token =
-                given()
-                        .contentType("application/json")
-                        .body(LoginDataFactory.loginValid())
-
-                        .when()
-                        .post("/auth/login")
-
-                        .then()
-                        .extract()
-                        .jsonPath().getString("token");
+        Integer addressId = register("/informalWorker/register", worker.json());
+        String token = login(worker.email(), worker.password());
 
         return new UserTestContext(token, addressId);
+    }
+
+    private static Integer register(String path, String json) {
+
+        return
+                given()
+                        .contentType("multipart/form-data")
+                        .multiPart("User", json, "application/json")
+
+                .when()
+                        .post(path)
+
+                .then()
+                        .statusCode(201)
+                        .extract()
+                        .path("addresses[0].id");
+
+    }
+
+    private static String login(String email, String password) {
+
+        return
+                given()
+                        .contentType("application/json")
+                        .body(LoginDataFactory.loginWithParameters(email, password))
+
+                .when()
+                        .post("/auth/login")
+
+                .then()
+                        .extract()
+                        .path("token");
     }
 }

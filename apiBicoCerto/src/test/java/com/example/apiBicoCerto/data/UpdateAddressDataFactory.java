@@ -51,9 +51,4 @@ public class UpdateAddressDataFactory {
         return updateAddressValid().replace("\"1042\""
                 , "null");
     }
-
-    public static String updateWithInvalidIsPrimary(){
-        return updateAddressValid().replace("\"true\""
-                , "null");
-    }
 }

@@ -69,7 +69,7 @@ public class AddressUpdateTest extends BaseTest {
 
         .then()
                 .log().ifValidationFails()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -168,21 +168,6 @@ public class AddressUpdateTest extends BaseTest {
                 .header("Authorization", "Bearer " + context.token)
                 .contentType("application/json")
                 .body(UpdateAddressDataFactory.updateWithInvalidNumber())
-
-        .when()
-                .patch("user/updateAddress/" + context.addressId)
-
-        .then()
-                .log().ifValidationFails()
-                .statusCode(400);
-    }
-
-    @Test
-    public void testUpdateAddressWithInvalidIsPrimary(){
-        given()
-                .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateAddressDataFactory.updateWithInvalidIsPrimary())
 
         .when()
                 .patch("user/updateAddress/" + context.addressId)

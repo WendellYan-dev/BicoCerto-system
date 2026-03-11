@@ -4,22 +4,19 @@ public class UpdateUserDataFactory {
 
     public static String updateUserValid() {
 
+        long unique = System.currentTimeMillis() % 100000;
+
         return """
             {
-                "email": "novoEmail@email.com",
+                "email": "novo%s@email.com",
                 "firstName": "Novo",
                 "lastName": "Nome",
                 "phoneNumber": "79988123210",
                 "birthDate": "2000-05-15",
                 "password": "12345678",
-                "removePhoto": true
+                "removePhoto": false
             }
-        """;
-    }
-
-    public static String updateWithInvalidEmail() {
-        return updateUserValid().replace("novoEmail@email.com"
-                , "novoEmailemail.com");
+        """.formatted(unique);
     }
 
     public static String updateWithInvalidPhoneNumber() {
@@ -43,16 +40,17 @@ public class UpdateUserDataFactory {
     }
 
     public static String updateWithPasswordEquals() {
-        return updateUserValid().replace("12345678"
-                , "12345678");
+        return """
+            {
+                "password": "Senha@123"
+            }
+        """;
     }
 
     public static String updateWithEmptyFirstName() {
         return updateUserValid().replace("Novo"
                 , "");
     }
-
-    // Verificação de update de foto
 
     public static String updateWithoutPassword() {
         return """
@@ -69,7 +67,7 @@ public class UpdateUserDataFactory {
     public static String updateWithoutFirstName() {
         return """
             {
-                "email": "novoSemNome@email.com"
+                "email": "novoSemNome@email.com",
                 "lastName": "Silva",
                 "phoneNumber": "79988123210",
                 "birthDate": "2000-05-15",

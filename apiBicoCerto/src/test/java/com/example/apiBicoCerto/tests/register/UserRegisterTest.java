@@ -2,16 +2,17 @@ package com.example.apiBicoCerto.tests.register;
 
 import com.example.apiBicoCerto.config.BaseTest;
 import com.example.apiBicoCerto.data.UserDataFactory;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.File;
 
 import static io.restassured.RestAssured.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserRegisterTest extends BaseTest {
-
-    // Testar no caso de já exisitr um usuário com userName, email ou cpf existente no sistema
-
 
     @Test
     public void testRegisterUser() {
@@ -28,16 +29,45 @@ public class UserRegisterTest extends BaseTest {
 
     // Teste para criar um usuário fixo para testar o login
     @Test
+    @Order(1)
     public void testRegisterUserForTestLogin() {
         given()
                 .contentType("multipart/form-data")
                 .multiPart("User", UserDataFactory.userForTestLogin(), "application/json")
 
-                .when()
+        .when()
                 .post("/user/register")
 
-                .then()
+        .then()
                 .statusCode(201);
+    }
+
+    @Test
+    @Order(2)
+    public void testRegisterUserWithExistingUserName() {
+        given()
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithExistingUserName(), "application/json")
+
+        .when()
+                .post("/user/register")
+
+        .then()
+                .statusCode(409);
+    }
+
+    @Test
+    @Order(3)
+    public void testRegisterUserWithExistingEmail() {
+        given()
+                .contentType("multipart/form-data")
+                .multiPart("User", UserDataFactory.userWithExistingUserName(), "application/json")
+
+        .when()
+                .post("/user/register")
+
+        .then()
+                .statusCode(409);
     }
 
     @Test

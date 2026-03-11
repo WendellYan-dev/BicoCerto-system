@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.*;
 
 public class LoginTest {
 
-    // Se quiser pegar o token rode este
+    // Se quiser pegar o token rode este, o usuário precisa estar cadastrado no sistema
     @Test
     public void testLogin() {
         String token =

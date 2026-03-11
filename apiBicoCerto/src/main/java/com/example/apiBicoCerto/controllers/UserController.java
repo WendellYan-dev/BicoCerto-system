@@ -56,10 +56,10 @@ public class UserController {
             @RequestPart(value = "profilePhoto", required = false) MultipartFile profilePhoto) {
 
         try {
-            registerUserService.registerUser(userDTO,profilePhoto);
+            User user = registerUserService.registerUser(userDTO,profilePhoto);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Usuário cadastrado com sucesso.");
+                    .body(user);
 
         } catch (ResponseStatusException e) {
             return ResponseEntity
@@ -106,7 +106,7 @@ public class UserController {
         } catch (ResponseStatusException e){
 
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(e.getStatusCode())
                     .body(e.getMessage());
 
         } catch (SecurityException e) {

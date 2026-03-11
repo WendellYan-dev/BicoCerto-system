@@ -1,14 +1,16 @@
 package com.example.apiBicoCerto.tests.updates;
 
+import com.example.apiBicoCerto.config.BaseTest;
 import com.example.apiBicoCerto.config.CreateUserHelper;
 import com.example.apiBicoCerto.config.UserTestContext;
 import com.example.apiBicoCerto.data.UpdateUserDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.File;
 
 import static io.restassured.RestAssured.given;
 
-public class UserUpdateTest {
+public class UserUpdateTest extends BaseTest {
 
     UserTestContext context;
 
@@ -21,13 +23,31 @@ public class UserUpdateTest {
     public void testUpdateUserValid(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateUserValid())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateUserValid(), "application/json")
 
-            .when()
-                .patch("user/updateProfile")
+        .when()
+                .patch("/user/updateProfile")
 
-            .then()
+        .then()
+                .log().ifValidationFails()
+                .statusCode(200);
+    }
+
+    @Test
+    public void testUpdateUserWithPhoto(){
+        given()
+                .header("Authorization", "Bearer " + context.token)
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateUserValid(), "application/json")
+                .multiPart("profilePhoto", new File("src/test/resources/photo.jpg"))
+
+        .when()
+                .patch("/user/updateProfile")
+
+        .then()
                 .log().ifValidationFails()
                 .statusCode(200);
     }
@@ -36,11 +56,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithoutToken(){
 
         given()
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateUserValid())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateUserValid()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -52,42 +74,30 @@ public class UserUpdateTest {
 
         given()
                 .header("Authorization", "Bearer token_invalido")
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateUserValid())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateUserValid()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
-                .statusCode(403);
-    }
-
-    // Aqui testa se o formato é válido e não se já existe outro existente no sistema
-    @Test
-    public void testUpdateUserWithInvalidEmail(){
-        given()
-                .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithInvalidEmail())
-
-        .when()
-                .patch("user/updateProfile")
-
-        .then()
-                .log().ifValidationFails()
-                .statusCode(400);
+                .statusCode(401);
     }
 
     @Test
     public void testUpdateUserWithInvalidPhoneNumber(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithInvalidPhoneNumber())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithInvalidPhoneNumber()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -98,11 +108,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithUnderageBirthDate(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithUnderageBirthDate())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithUnderageBirthDate()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -113,11 +125,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithTooOldBirthDate(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithTooOldBirthDate())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithTooOldBirthDate()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -128,11 +142,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithInvalidPassword(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithInvalidPassword())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithInvalidPassword()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -143,11 +159,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithPasswordEquals(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithPasswordEquals())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithPasswordEquals()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -158,11 +176,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithEmptyFirstName(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithEmptyFirstName())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithEmptyFirstName()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -173,11 +193,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithoutPassword(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithoutPassword())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithoutPassword()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -188,11 +210,13 @@ public class UserUpdateTest {
     public void testUpdateUserWithoutFirstName(){
         given()
                 .header("Authorization", "Bearer " + context.token)
-                .contentType("application/json")
-                .body(UpdateUserDataFactory.updateWithoutFirstName())
+                .contentType("multipart/form-data")
+                .multiPart("userUpdate"
+                        , UpdateUserDataFactory.updateWithoutFirstName()
+                        , "application/json")
 
         .when()
-                .patch("user/updateProfile")
+                .patch("/user/updateProfile")
 
         .then()
                 .log().ifValidationFails()

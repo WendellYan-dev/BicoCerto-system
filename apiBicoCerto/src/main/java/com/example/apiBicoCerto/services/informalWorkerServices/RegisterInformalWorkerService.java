@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 @Transactional
@@ -47,7 +46,7 @@ public class RegisterInformalWorkerService {
     private GenerateLinkService generateLinkService;
 
 
-    public void registerInformalWorker(InformalWorkerDTO informalWorkerDTO, MultipartFile profilePhoto) throws IOException {
+    public InformalWorker registerInformalWorker(InformalWorkerDTO informalWorkerDTO, MultipartFile profilePhoto) throws IOException {
 
         InformalWorker informalWorker = new InformalWorker();
         User user = new User();
@@ -164,6 +163,7 @@ public class RegisterInformalWorkerService {
 
         informalWorkerRepository.save(informalWorker);
 
+        return informalWorker;
     }
 
 }

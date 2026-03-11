@@ -4,6 +4,7 @@ package com.example.apiBicoCerto.data;
 
 import com.example.apiBicoCerto.config.CnpjGenerator;
 import com.example.apiBicoCerto.config.CpfGenerator;
+import com.example.apiBicoCerto.config.UserTestDTO;
 
 public class UserDataFactory {
 
@@ -70,6 +71,11 @@ public class UserDataFactory {
     public static String userWithNullPhone() {
         return userValid().replace("\"phoneNumber\": \"79988123456\""
                 , "\"phoneNumber\": null");
+    }
+
+    public static String userWithExistingUserName(){
+        return userForTestLogin().replace("igor.silva@email.com"
+                , "igor@email.com");
     }
 
     // privacidade de telefone
@@ -164,5 +170,42 @@ public class UserDataFactory {
                 ]
             }
         """.formatted(cpf);
+    }
+
+    public static UserTestDTO userValidComplex() {
+
+        long unique = System.currentTimeMillis() % 100000;
+        String cpf = CpfGenerator.generateCpf();
+
+        String email = "Cliente" + unique + "@email.com";
+        String password = "Senha@123";
+        String userName = "Cliente" + unique;
+
+        String json = """
+        {
+            "userName": "%s",
+            "email": "%s",
+            "firstName": "Cliente",
+            "lastName": "Silva",
+            "phoneNumber": "79988123456",
+            "birthDate": "2000-05-10",
+            "password": "%s",
+            "cpf": "%s",
+            "cnpj": null,
+            "addresses": [
+                {
+                  "postalCode": "49000000",
+                  "street": "Rua A",
+                  "neighborhood": "Centro",
+                  "state": "SE",
+                  "number": "100",
+                  "complement": "Apto 2",
+                  "isPrimary": true
+                }
+            ]
+        }
+    """.formatted(userName, email, password, cpf);
+
+        return new UserTestDTO(json, email, password);
     }
 }

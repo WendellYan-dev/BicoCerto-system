@@ -1,5 +1,6 @@
 package com.example.apiBicoCerto.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class Address {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_user", nullable = false)
+    @JsonBackReference
     private User user;
 
     @Column(nullable = false)

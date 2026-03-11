@@ -3,6 +3,7 @@ package com.example.apiBicoCerto.entities;
 import com.example.apiBicoCerto.enums.ServiceCategories;
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class InformalWorker{
 
     @OneToOne(optional = false)
     @JoinColumn(name = "id_user", nullable = false, unique = true)
+    @JsonBackReference
     private User user;
 
     @OneToMany(

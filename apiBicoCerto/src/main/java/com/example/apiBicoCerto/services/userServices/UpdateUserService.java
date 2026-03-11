@@ -100,7 +100,7 @@ public class UpdateUserService {
             }
             //o Spring faz o hash da senha informada usando o mesmo salt armazenado para comparar a senha atual com a que quero alterar
             if(passwordEncoder.matches(update.password(), user.getPassword())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"A nova senha não pode ser igual à senha atual");
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"A nova senha não pode ser igual à senha atual");
             }
 
             if(!verificationService.isValidPassword(update.password())){

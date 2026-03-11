@@ -11,6 +11,15 @@ public class LoginDataFactory {
             """;
     }
 
+    public static String loginWithParameters(String login, String password){
+        return """
+            {
+              "login": "%s",
+              "password": "%s"
+            }
+            """.formatted(login, password);
+    }
+
     public static String loginWithEmailValid(){
         return loginValid().replace("\"login\": \"igor123\""
                 , "\"login\": \"igor.silva@email.com\"");

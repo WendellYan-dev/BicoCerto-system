@@ -2,9 +2,8 @@ package com.example.apiBicoCerto.controllers;
 
 import com.example.apiBicoCerto.DTOs.InformalWorkerDTO;
 import com.example.apiBicoCerto.DTOs.UpResponseIformalWorkerDTO;
-import com.example.apiBicoCerto.DTOs.UpdateAddressResponseDTO;
 import com.example.apiBicoCerto.DTOs.UpdateInformalWorkerDTO;
-import com.example.apiBicoCerto.DTOs.UserDTO;
+import com.example.apiBicoCerto.entities.InformalWorker;
 import com.example.apiBicoCerto.services.informalWorkerServices.RegisterInformalWorkerService;
 import com.example.apiBicoCerto.services.informalWorkerServices.UpdateInformalWorkerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,10 +39,12 @@ public class InformalWorkerController {
 
         try {
 
-            registerInformalWorkerService.registerInformalWorker(informalWorkerDTO,profilePhoto);
+            InformalWorker worker = registerInformalWorkerService
+                    .registerInformalWorker(informalWorkerDTO, profilePhoto);
 
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Prestador cadastrado com sucesso");
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(worker);
 
         } catch (ResponseStatusException ex) {
 

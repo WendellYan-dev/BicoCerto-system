@@ -2,6 +2,7 @@ package com.example.apiBicoCerto.entities;
 
 import com.example.apiBicoCerto.enums.UserStatus;
 import com.example.apiBicoCerto.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -72,6 +73,7 @@ public class User implements UserDetails {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

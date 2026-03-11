@@ -25,8 +25,8 @@ public class InformalWorkerUpdateTest {
                 .contentType("application/json")
                 .body(UpdateInformalWorkerDataFactory.updateInfoWorkerValid())
 
-        .when()
-                .patch("informalWorker/updateProfile")
+                .when()
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -44,7 +44,7 @@ public class InformalWorkerUpdateTest {
                 .body(UpdateInformalWorkerDataFactory.updateInfoWorkerValid())
 
         .when()
-                .patch("informalWorker/updateProfile")
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -55,16 +55,16 @@ public class InformalWorkerUpdateTest {
     public void testUpdateInfoWorkerWithInvalidToken(){
 
         given()
-                .header("Authorization", "Bearer token_invalido")
+                .auth().oauth2("token_invalido")
                 .contentType("application/json")
                 .body(UpdateInformalWorkerDataFactory.updateInfoWorkerValid())
 
         .when()
-                .patch("informalWorker/updateProfile")
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
-                .statusCode(403);
+                .statusCode(401);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class InformalWorkerUpdateTest {
                 .body(UpdateInformalWorkerDataFactory.updateWithInvalidServiceCaterory())
 
         .when()
-                .patch("informalWorker/updateProfile")
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -90,7 +90,7 @@ public class InformalWorkerUpdateTest {
                 .body(UpdateInformalWorkerDataFactory.updateWithEmptyAboutMe())
 
         .when()
-                .patch("informalWorker/updateProfile")
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
@@ -105,7 +105,7 @@ public class InformalWorkerUpdateTest {
                 .body(UpdateInformalWorkerDataFactory.updateWithEmptyLocalService())
 
         .when()
-                .patch("informalWorker/updateProfile")
+                .patch("/informalWorker/updateProfile")
 
         .then()
                 .log().ifValidationFails()
