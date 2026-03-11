@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-@Table(name = "service")
+@Table(name = "work")
 @Entity
 @Setter
 @Getter
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 public class Work {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_service")
+    @Column(name = "id_work")
     private Integer id;
 
     @Column(name = "title",nullable = false)
@@ -36,6 +37,7 @@ public class Work {
     @JoinColumn(name = "id_informal_worker",nullable = false)
     private InformalWorker informalWorker;
 
-
+    @OneToMany(mappedBy = "work")
+    private List<Booking> bookings;
 
 }

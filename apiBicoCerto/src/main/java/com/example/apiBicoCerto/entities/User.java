@@ -83,6 +83,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private InformalWorker informalWorker;
 
+    @OneToMany(mappedBy = "user")
+    private List<Booking> bookings;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

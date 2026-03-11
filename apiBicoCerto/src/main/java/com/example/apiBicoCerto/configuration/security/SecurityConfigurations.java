@@ -49,6 +49,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/availability/register").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/availability/delete").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/booking/register").authenticated()
+                        .requestMatchers(HttpMethod.PATCH,"/booking/confirm").authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
