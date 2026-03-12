@@ -77,7 +77,7 @@ public class WorkController {
 
     // ============================= UPDATE =============================
 
-    @PatchMapping(path = "edit/{id}", consumes = "multipart/form-data")
+    @PatchMapping(path = "/edit/{id}", consumes = "multipart/form-data")
     @Operation(
             summary = "Editar um serviço",
             description = "Endpoint responsável por editar parcialmente um serviço existente (apenas o dono pode editar)",
@@ -116,7 +116,7 @@ public class WorkController {
 
     // ============================= DELETE =============================
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @Operation(
             summary = "Excluir um serviço",
             description = "Endpoint responsável por excluir um serviço existente (apenas o dono pode excluir)",
@@ -149,7 +149,7 @@ public class WorkController {
 
     // ============================= SEARCH =============================
 
-    @GetMapping("search/{id}")
+    @GetMapping("/search/{id}")
     @Operation(
             summary = "Buscar um serviço por ID",
             description = "Endpoint responsável por retornar os dados de um serviço específico pelo seu identificador",

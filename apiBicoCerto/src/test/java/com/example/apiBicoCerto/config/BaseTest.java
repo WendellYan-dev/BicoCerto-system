@@ -12,7 +12,7 @@ public class BaseTest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 8080;
     }
-
+    /*
     @AfterAll
     public static void resetDatabase(){
         given()
@@ -22,5 +22,5 @@ public class BaseTest {
 
         .then()
                 .statusCode(204);
-    }
+    }*/
 }

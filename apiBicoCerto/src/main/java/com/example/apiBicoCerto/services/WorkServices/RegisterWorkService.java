@@ -100,8 +100,8 @@ public class RegisterWorkService {
             work.setUrlPhoto(null);
         }
 
-        work.setDescription(registerWorkDTO.title());
-        work.setTitle(registerWorkDTO.description());
+        work.setTitle(registerWorkDTO.title());
+        work.setDescription(registerWorkDTO.description());
         work.setPrice(registerWorkDTO.price());
 
         work.setInformalWorker(informalWorker);
