@@ -1,4 +1,4 @@
-package com.example.apiBicoCerto.services.WorkServices;
+package com.example.apiBicoCerto.services.workServices;
 
 import com.example.apiBicoCerto.DTOs.EditWorkDTO;
 import com.example.apiBicoCerto.entities.User;
@@ -90,6 +90,25 @@ public class EditWorkService {
                     HttpStatus.BAD_REQUEST,
                     "Nenhum campo foi enviado para atualização."
             );
+        }
+
+        if (editWorkDTO.title() != null) {
+            if (editWorkDTO.title().trim().isEmpty()) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O Título não pode estar vazia."
+                );
+            }
+            if (workRepository.existsByTitleIgnoreCaseAndInformalWorker_IdInformalWorker(
+                    editWorkDTO.title(),
+                    work.getInformalWorker().getIdInformalWorker()
+            )) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Esse prestador já possui um serviço com esse título"
+                );
+            }
+            work.setTitle(editWorkDTO.title());
         }
 
         if (editWorkDTO.description() != null) {

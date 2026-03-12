@@ -1,4 +1,4 @@
-package com.example.apiBicoCerto.services.WorkServices;
+package com.example.apiBicoCerto.services.workServices;
 
 
 import com.example.apiBicoCerto.DTOs.RegisterWorkDTO;
@@ -73,6 +73,16 @@ public class RegisterWorkService {
         if (registerWorkDTO.title() == null || registerWorkDTO.title().isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Título do Serviço é obrigatório");
+        }
+
+        if (workRepository.existsByTitleIgnoreCaseAndInformalWorker_IdInformalWorker(
+                registerWorkDTO.title(),
+                informalWorker.getIdInformalWorker()
+        )) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Esse prestador já possui um serviço com esse título"
+            );
         }
 
         if (registerWorkDTO.description() == null || registerWorkDTO.description().isBlank()){

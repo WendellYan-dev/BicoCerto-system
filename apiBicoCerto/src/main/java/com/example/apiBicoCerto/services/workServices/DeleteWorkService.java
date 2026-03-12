@@ -1,4 +1,4 @@
-package com.example.apiBicoCerto.services.WorkServices;
+package com.example.apiBicoCerto.services.workServices;
 
 import com.example.apiBicoCerto.entities.User;
 import com.example.apiBicoCerto.entities.Work;
