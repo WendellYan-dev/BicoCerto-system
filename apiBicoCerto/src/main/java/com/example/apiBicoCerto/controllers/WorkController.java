@@ -3,6 +3,7 @@ package com.example.apiBicoCerto.controllers;
 import com.example.apiBicoCerto.DTOs.EditWorkDTO;
 import com.example.apiBicoCerto.DTOs.RegisterWorkDTO;
 import com.example.apiBicoCerto.DTOs.SearchWorkDTO;
+import com.example.apiBicoCerto.entities.Work;
 import com.example.apiBicoCerto.services.workServices.DeleteWorkService;
 import com.example.apiBicoCerto.services.workServices.EditWorkService;
 import com.example.apiBicoCerto.services.workServices.RegisterWorkService;
@@ -54,8 +55,8 @@ public class WorkController {
     public ResponseEntity<?> registerWork(@ModelAttribute RegisterWorkDTO workDTO) {
 
         try {
-            registerWorkService.registerService(workDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            Work work = registerWorkService.registerService(workDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(work.getId());
 
         } catch (ResponseStatusException ex) {
             return ResponseEntity

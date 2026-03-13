@@ -36,7 +36,7 @@ public class RegisterWorkService {
 
 
 
-    public void registerService(RegisterWorkDTO registerWorkDTO) throws IOException {
+    public Work registerService(RegisterWorkDTO registerWorkDTO) throws IOException {
 
         Authentication authentication = SecurityContextHolder
                 .getContext()
@@ -116,7 +116,6 @@ public class RegisterWorkService {
 
         work.setInformalWorker(informalWorker);
 
-        workRepository.save(work);
-
+        return workRepository.save(work);
     }
 }

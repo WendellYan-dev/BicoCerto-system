@@ -3,7 +3,7 @@ package com.example.apiBicoCerto.data;
 public class WorkDataFactory {
 
     public static String validTitleUnique(){
-        return "Festa de casamento única";
+        return "Festa de casamento unica";
     }
 
     public static String validTitle(){

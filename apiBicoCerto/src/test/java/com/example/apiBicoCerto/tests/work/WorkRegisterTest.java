@@ -43,7 +43,7 @@ public class WorkRegisterTest extends BaseTest {
     }
 
     @Test
-    public void testRegisterWorkWithEqualsThenZero(){
+    public void testRegisterWorkWithEqualsToZero(){
         given()
                 .header("Authorization", "Bearer " + context.token)
                 .contentType("multipart/form-data")
@@ -61,7 +61,7 @@ public class WorkRegisterTest extends BaseTest {
     }
 
     @Test
-    public void testRegisterWorkWithLessThenZero(){
+    public void testRegisterWorkWithLessThanZero(){
         given()
                 .header("Authorization", "Bearer " + context.token)
                 .contentType("multipart/form-data")

@@ -104,7 +104,7 @@ public class EditWorkService {
                     work.getInformalWorker().getIdInformalWorker()
             )) {
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
+                        HttpStatus.CONFLICT,
                         "Esse prestador já possui um serviço com esse título"
                 );
             }
