@@ -25,7 +25,7 @@ public class InformalWorkerUpdateTest {
                 .contentType("application/json")
                 .body(UpdateInformalWorkerDataFactory.updateInfoWorkerValid())
 
-                .when()
+        .when()
                 .patch("/informalWorker/updateProfile")
 
         .then()
