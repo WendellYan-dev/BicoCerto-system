@@ -36,7 +36,7 @@ public class RegisterWorkService {
 
 
 
-    public void registerService(RegisterWorkDTO registerWorkDTO) throws IOException {
+    public Work registerService(RegisterWorkDTO registerWorkDTO) throws IOException {
 
         Authentication authentication = SecurityContextHolder
                 .getContext()
@@ -80,7 +80,7 @@ public class RegisterWorkService {
                 informalWorker.getIdInformalWorker()
         )) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
+                    HttpStatus.CONFLICT,
                     "Esse prestador já possui um serviço com esse título"
             );
         }
@@ -116,7 +116,6 @@ public class RegisterWorkService {
 
         work.setInformalWorker(informalWorker);
 
-        workRepository.save(work);
-
+        return workRepository.save(work);
     }
 }
