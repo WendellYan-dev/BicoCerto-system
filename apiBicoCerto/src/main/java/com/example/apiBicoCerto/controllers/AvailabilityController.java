@@ -67,7 +67,7 @@ public class AvailabilityController {
             summary = "Deletar disponibilidades",
             description = "Endpoint responsável por deletar uma lista de horários de disponibilidade para o prestador logado",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Disponibilidades deletadas com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Disponibilidades deletadas com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Conflito de horários ou dados inválidos"),
                     @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
                     @ApiResponse(responseCode = "404", description = "Prestador não encontrado"),
@@ -79,7 +79,7 @@ public class AvailabilityController {
         try {
 
             deleteAvailabilityService.deleteAvailability(idAvailability);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         } catch (ResponseStatusException e) {
 

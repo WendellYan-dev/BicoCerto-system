@@ -55,7 +55,7 @@ public class RegisterAvailabilityService {
 
         if (informalWorker == null) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
+                    HttpStatus.FORBIDDEN,
                     "Apenas Prestadores podem cadastrar agenda."
             );
         }
@@ -75,7 +75,7 @@ public class RegisterAvailabilityService {
                     )) {
 
                 throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
+                        HttpStatus.CONFLICT,
                         "Conflito de horário para esse prestador."
                 );
             }
@@ -116,7 +116,7 @@ public class RegisterAvailabilityService {
 
                     if (hasConflict) {
                         throw new ResponseStatusException(
-                                HttpStatus.BAD_REQUEST,
+                                HttpStatus.CONFLICT,
                                 "Conflito de horários na própria requisição para o dia "
                                         + current.dayOfWeek()
                         );
