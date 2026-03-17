@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class AvailabilityController {
                     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
             }
     )
-    public ResponseEntity<?> registerAvailability(@RequestBody List<AvailabilityDTO> availabilityDTOList) {
+    public ResponseEntity<?> registerAvailability(@RequestBody @Valid List<AvailabilityDTO> availabilityDTOList) {
 
         try {
             List<Integer> ids = registerAvailabilityService.registerAvailability(availabilityDTOList);
