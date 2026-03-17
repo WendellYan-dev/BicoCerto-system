@@ -97,7 +97,6 @@ public class AvailabilityTest extends BaseTest {
                 .statusCode(400);
     }
 
-    /* Esperando correção no código
     @Test
     public void testRegisterAvailabilityWithEmptyField(){
         given()
@@ -127,7 +126,6 @@ public class AvailabilityTest extends BaseTest {
                 .log().ifValidationFails()
                 .statusCode(400);
     }
-    */
 
     @Test
     public void testRegisterAvailabilityWithOutToken(){
