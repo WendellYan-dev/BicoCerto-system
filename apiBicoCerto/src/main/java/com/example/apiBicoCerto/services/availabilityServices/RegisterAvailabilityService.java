@@ -64,6 +64,13 @@ public class RegisterAvailabilityService {
 
         List<Availability> availabilities = new ArrayList<>();
 
+        if (availabilityDTOList.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Nenhum horário foi solicitado para registro."
+            );
+        }
+
         for (AvailabilityDTO availabilityDTO : availabilityDTOList){
 
             //Valida Horário no banco;
