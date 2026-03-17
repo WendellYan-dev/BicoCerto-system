@@ -29,7 +29,7 @@ public class RegisterAvailabilityService {
     private InformalWorkerRepository informalWorkerRepository;
 
     @Transactional
-    public void registerAvailability(List<AvailabilityDTO> availabilityDTOList){
+    public List<Integer> registerAvailability(List<AvailabilityDTO> availabilityDTOList){
 
         Authentication authentication = SecurityContextHolder
                 .getContext()
@@ -88,7 +88,16 @@ public class RegisterAvailabilityService {
 
             availabilities.add(availability);
         }
-        availabilityRepository.saveAll(availabilities);
+        List<Availability> saved = availabilityRepository.saveAll(availabilities);
+
+        // extrai os IDs
+        List<Integer> ids = new ArrayList<>();
+
+        for (Availability availability : saved) {
+            ids.add(availability.getIdAvailability());
+        }
+
+        return ids;
     }
 
     private void validateInternalConflicts(List<AvailabilityDTO> availabilityDTOList) {

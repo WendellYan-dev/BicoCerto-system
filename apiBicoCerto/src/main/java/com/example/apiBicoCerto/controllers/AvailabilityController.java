@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/availability")
@@ -46,8 +47,9 @@ public class AvailabilityController {
     public ResponseEntity<?> registerAvailability(@RequestBody List<AvailabilityDTO> availabilityDTOList) {
 
         try {
-            registerAvailabilityService.registerAvailability(availabilityDTOList);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            List<Integer> ids = registerAvailabilityService.registerAvailability(availabilityDTOList);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(ids);
 
         } catch (ResponseStatusException ex) {
             return ResponseEntity
