@@ -40,6 +40,7 @@ public class SecurityConfigurations {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/register").permitAll()
                         .requestMatchers(HttpMethod.DELETE,"/test/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/informalWorker/list").permitAll()
                         .requestMatchers(HttpMethod.PATCH,"/user/updateProfile").authenticated()
                         .requestMatchers(HttpMethod.PATCH,"/user/updateAddress/{idAddress}").authenticated()
                         .requestMatchers(HttpMethod.POST,"/informalWorker/register").permitAll()

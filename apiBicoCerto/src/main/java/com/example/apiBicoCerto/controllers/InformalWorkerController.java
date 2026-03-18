@@ -1,9 +1,11 @@
 package com.example.apiBicoCerto.controllers;
 
 import com.example.apiBicoCerto.DTOs.InformalWorkerDTO;
+import com.example.apiBicoCerto.DTOs.InformalWorkerResponseDTO;
 import com.example.apiBicoCerto.DTOs.UpResponseIformalWorkerDTO;
 import com.example.apiBicoCerto.DTOs.UpdateInformalWorkerDTO;
 import com.example.apiBicoCerto.entities.InformalWorker;
+import com.example.apiBicoCerto.services.informalWorkerServices.ListInformalWorkerService;
 import com.example.apiBicoCerto.services.informalWorkerServices.RegisterInformalWorkerService;
 import com.example.apiBicoCerto.services.informalWorkerServices.UpdateInformalWorkerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/informalWorker")
 @Tag(name = "InformalWorker", description = "Endpoints responsáveis pelo gerenciamento de informalWorker")
@@ -28,6 +32,9 @@ public class InformalWorkerController {
 
     @Autowired
     private UpdateInformalWorkerService informalWorkerService;
+
+    @Autowired
+    private ListInformalWorkerService listInformalWorkService;
 
     @Operation(
             summary = "Cadastrar novo informal worker",
@@ -107,5 +114,24 @@ public class InformalWorkerController {
         }
 
     }
+
+    @GetMapping("list")
+    public ResponseEntity<?> listInformalWorker(@RequestParam(required = false) String name,@RequestParam(required = false) String localService){
+
+        try {
+
+            List<InformalWorkerResponseDTO> workers;
+            workers = listInformalWorkService.listInformalWorker(name,localService);
+            return ResponseEntity.ok(workers);
+
+        } catch (Exception e){
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno do servidro ao tentar atualizar dados do prestador de serviços"+e.getMessage());
+
+        }
+
+    }
+
 
 }
