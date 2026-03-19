@@ -4,22 +4,22 @@ import com.example.apiBicoCerto.DTOs.EditWorkDTO;
 import com.example.apiBicoCerto.DTOs.RegisterWorkDTO;
 import com.example.apiBicoCerto.DTOs.SearchWorkDTO;
 import com.example.apiBicoCerto.entities.Work;
-import com.example.apiBicoCerto.services.workServices.DeleteWorkService;
-import com.example.apiBicoCerto.services.workServices.EditWorkService;
-import com.example.apiBicoCerto.services.workServices.RegisterWorkService;
-import com.example.apiBicoCerto.services.workServices.SearchWorkService;
+import com.example.apiBicoCerto.services.workServices.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/work")
@@ -37,6 +37,9 @@ public class WorkController {
 
     @Autowired
     private SearchWorkService searchWorkService;
+
+    @Autowired
+    private ListWorksService listWorksService;
 
 
     // ============================= CREATE =============================
@@ -176,6 +179,27 @@ public class WorkController {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro inesperado ao buscar o serviço.");
+        }
+    }
+
+    @GetMapping("/list")
+    @Operation(
+            summary = "Listar serviços",
+            description = "Lista todos os serviços ou filtra por título",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
+    public ResponseEntity<?> listWorks(@RequestParam(required = false) String title, @RequestParam(required = false)BigDecimal price,  @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+
+        try {
+            return ResponseEntity.ok(listWorksService.listWorks(title, price, pageable));
+
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao listar serviços.");
         }
     }
 }

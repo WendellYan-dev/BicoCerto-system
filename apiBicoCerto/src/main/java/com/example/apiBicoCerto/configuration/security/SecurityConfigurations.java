@@ -47,6 +47,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PATCH,"/work/edit/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET,"/work/search/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/work/delete/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/work/list").permitAll()
                         .requestMatchers(HttpMethod.PATCH,"/informalWorker/updateProfile").authenticated()
                         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/availability/register").authenticated()
