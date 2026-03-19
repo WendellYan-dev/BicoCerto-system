@@ -2,8 +2,10 @@ package com.example.apiBicoCerto.controllers;
 
 import com.example.apiBicoCerto.DTOs.AvailabilityDTO;
 import com.example.apiBicoCerto.DTOs.DeleteAvailabilityDTO;
+import com.example.apiBicoCerto.DTOs.ListAvailabilityDTO;
 import com.example.apiBicoCerto.exceptions.NotFoundException;
 import com.example.apiBicoCerto.services.availabilityServices.DeleteAvailabilityService;
+import com.example.apiBicoCerto.services.availabilityServices.ListAvailabilityService;
 import com.example.apiBicoCerto.services.availabilityServices.RegisterAvailabilityService;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -28,6 +30,9 @@ public class AvailabilityController {
 
     @Autowired
     private DeleteAvailabilityService deleteAvailabilityService;
+
+    @Autowired
+    private ListAvailabilityService listAvailabilityService;
 
 
     // ============================= CREATE =============================
@@ -102,6 +107,40 @@ public class AvailabilityController {
 
         }
 
+    }
+    @GetMapping("/list")
+    @Operation(
+            summary = "Listar disponibilidades",
+            description = "Endpoint responsável por listar os horários de disponibilidade do prestador logado",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Nenhum horário cadastrado"),
+                    @ApiResponse(responseCode = "401", description = "Usuário não autenticado"),
+                    @ApiResponse(responseCode = "403", description = "Prestador não cadastrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+            }
+    )
+    public ResponseEntity<?> listAvailability() {
+
+        try {
+
+            List<ListAvailabilityDTO> listAvailabilityDTOS =
+                    listAvailabilityService.listAvailability();
+
+            return ResponseEntity.ok(listAvailabilityDTOS);
+
+        } catch (ResponseStatusException ex) {
+
+            return ResponseEntity
+                    .status(ex.getStatusCode())
+                    .body(ex.getReason());
+
+        } catch (Exception ex) {
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado ao listar disponibilidade.");
+        }
     }
 
 }

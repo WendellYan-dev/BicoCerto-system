@@ -31,5 +31,6 @@ public interface AvailabilityRepository extends JpaRepository<Availability,Integ
             LocalTime startTime,
             LocalTime endTime
     );
+    List<Availability> findByInformalWorker_IdInformalWorker(Integer informalWorkerId);
 
 }
