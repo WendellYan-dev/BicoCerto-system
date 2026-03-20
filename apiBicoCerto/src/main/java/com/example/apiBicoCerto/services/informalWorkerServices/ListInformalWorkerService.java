@@ -19,9 +19,9 @@ public class ListInformalWorkerService {
     @Autowired
     private InformalWorkerRepository informalWorkerRepository;
 
-    public List<InformalWorkerResponseDTO> listInformalWorker(String name,String local){
+    public List<InformalWorkerResponseDTO> listInformalWorker(String userName,String local,String serviceCategory){
 
-        Specification<InformalWorker> spec = InformalWorkerSpecs.filter(name,local);
+        Specification<InformalWorker> spec = InformalWorkerSpecs.filter(userName,local,serviceCategory);
 
         List<InformalWorker> workers = informalWorkerRepository.findAll(spec);
 

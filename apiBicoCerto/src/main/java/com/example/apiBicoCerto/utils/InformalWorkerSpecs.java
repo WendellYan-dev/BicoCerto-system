@@ -11,7 +11,8 @@ public class InformalWorkerSpecs {
 
     public static Specification<InformalWorker> filter(
             String userName,
-            String localService
+            String localService,
+            String serviceCategory
     ) {
 
         return (root, query, cb) -> {
@@ -31,6 +32,15 @@ public class InformalWorkerSpecs {
                         cb.like(
                                 cb.lower(root.get("localService")),
                                 "%" + localService.toLowerCase() + "%"
+                        )
+                );
+            }
+
+            if (serviceCategory != null && !serviceCategory.isBlank()) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(root.get("serviceCategory")),
+                                "%" + serviceCategory.toLowerCase() + "%"
                         )
                 );
             }

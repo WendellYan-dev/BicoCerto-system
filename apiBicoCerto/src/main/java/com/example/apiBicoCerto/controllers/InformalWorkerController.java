@@ -116,12 +116,12 @@ public class InformalWorkerController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<?> listInformalWorker(@RequestParam(required = false) String name,@RequestParam(required = false) String localService){
+    public ResponseEntity<?> listInformalWorker(@RequestParam(required = false) String userName,@RequestParam(required = false) String localService,@RequestParam(required = false) String serviceCategory){
 
         try {
 
             List<InformalWorkerResponseDTO> workers;
-            workers = listInformalWorkService.listInformalWorker(name,localService);
+            workers = listInformalWorkService.listInformalWorker(userName,localService,serviceCategory);
             return ResponseEntity.ok(workers);
 
         } catch (Exception e){
