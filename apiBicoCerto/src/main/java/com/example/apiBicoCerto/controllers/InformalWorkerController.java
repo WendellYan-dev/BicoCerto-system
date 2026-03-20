@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -115,13 +116,13 @@ public class InformalWorkerController {
 
     }
 
-    @GetMapping("list")
-    public ResponseEntity<?> listInformalWorker(@RequestParam(required = false) String userName,@RequestParam(required = false) String localService,@RequestParam(required = false) String serviceCategory){
+    @GetMapping("/list")
+    public ResponseEntity<?> listInformalWorker(@RequestParam(required = false) String userName,@RequestParam(required = false) String localService,@RequestParam(required = false) String serviceCategory,@RequestParam(defaultValue = "0") Integer offSet,@RequestParam(defaultValue = "3") Integer pageSize){
 
         try {
 
-            List<InformalWorkerResponseDTO> workers;
-            workers = listInformalWorkService.listInformalWorker(userName,localService,serviceCategory);
+            Page<InformalWorkerResponseDTO> workers;
+            workers = listInformalWorkService.listInformalWorker(userName,localService,serviceCategory,offSet,pageSize);
             return ResponseEntity.ok(workers);
 
         } catch (Exception e){

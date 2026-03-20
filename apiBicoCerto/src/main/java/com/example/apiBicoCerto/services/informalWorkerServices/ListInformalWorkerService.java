@@ -7,6 +7,8 @@ import com.example.apiBicoCerto.repositories.InformalWorkerRepository;
 import com.example.apiBicoCerto.utils.InformalWorkerSpecs;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +21,15 @@ public class ListInformalWorkerService {
     @Autowired
     private InformalWorkerRepository informalWorkerRepository;
 
-    public List<InformalWorkerResponseDTO> listInformalWorker(String userName,String local,String serviceCategory){
+    public Page<InformalWorkerResponseDTO> listInformalWorker(String userName,String local,String serviceCategory,Integer offSet,Integer pageSize){
 
         Specification<InformalWorker> spec = InformalWorkerSpecs.filter(userName,local,serviceCategory);
 
-        List<InformalWorker> workers = informalWorkerRepository.findAll(spec);
+        PageRequest pageRequest = PageRequest.of(offSet,pageSize);
 
-        return workers.stream()
-                .map(this::toDTO)
-                .toList();
+        return informalWorkerRepository
+                .findAll(spec,pageRequest)
+                .map(this::toDTO);
 
     }
 
